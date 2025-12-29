@@ -150,3 +150,8 @@ public sealed record UpdateCharacterRequestDto(
     int? PointsCombat,
     int? PointsMagic
 );
+
+public sealed record CharacterEquipmentRequestDto(
+    int EquipmentId,
+    int? Qty
+);

@@ -11,3 +11,13 @@ public sealed record EquipmentLookupDto(
     int? IsShield,
     int? IsHelmet
 );
+
+public sealed record EquipmentGroupDto(int Id, string Name);
+
+public sealed record EquipmentFromGroupDto(
+    int Id,
+    string Name,
+    string? Description,
+    int? Value,
+    int? GroupId
+);

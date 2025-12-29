@@ -27,6 +27,7 @@ public class AppDbContext : DbContext
     public DbSet<Category> Categories => Set<Category>();
 
     public DbSet<Equipment> Equipments => Set<Equipment>();
+    public DbSet<EquipmentGroup> EquipmentGroups => Set<EquipmentGroup>();
     public DbSet<EquipmentWeaponStats> EquipmentWeaponStats => Set<EquipmentWeaponStats>();
     public DbSet<EquipmentDefenseStats> EquipmentDefenseStats => Set<EquipmentDefenseStats>();
 

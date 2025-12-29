@@ -156,6 +156,34 @@ public sealed class CharacterService : ICharacterService
         return true;
     }
 
+    public async Task<bool> AddEquipmentAsync(int id, CharacterEquipmentRequestDto request, CancellationToken ct)
+    {
+        var c = await _repo.GetAsync(id, ct);
+        if (c is null) return false;
+
+        var exists = await _repo.EquipmentExistsAsync(request.EquipmentId, ct);
+        if (!exists) return false;
+
+        var current = await _repo.GetEquipmentAsync(id, request.EquipmentId, ct);
+        if (current is null)
+        {
+            await _repo.AddEquipmentAsync(new CharacterEquipment
+            {
+                CharacterId = id,
+                EquipmentId = request.EquipmentId,
+                Qty = request.Qty ?? 1
+            }, ct);
+        }
+        else
+        {
+            var qty = request.Qty ?? (current.Qty ?? 0) + 1;
+            current.Qty = qty;
+        }
+
+        await _repo.SaveChangesAsync(ct);
+        return true;
+    }
+
     public Task<bool> DeleteAsync(int id, CancellationToken ct)
     {
         return _repo.DeleteAsync(id, ct);
@@ -174,3 +202,5 @@ public sealed class CharacterService : ICharacterService
         PontosMagia = stats.PontosMagia
     };
 }
+
+

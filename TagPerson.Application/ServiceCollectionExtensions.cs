@@ -14,6 +14,7 @@ public static class ServiceCollectionExtensions
         services.AddScoped<ISkillService, SkillService>();
         services.AddScoped<ICombatService, CombatService>();
         services.AddScoped<ISpellService, SpellService>();
+        services.AddScoped<IEquipmentService, EquipmentService>();
         return services;
     }
 }

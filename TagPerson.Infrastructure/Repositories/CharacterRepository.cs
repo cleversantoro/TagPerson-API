@@ -54,5 +54,21 @@ public sealed class CharacterRepository : ICharacterRepository
         return true;
     }
 
+    public async Task<bool> EquipmentExistsAsync(int equipmentId, CancellationToken ct)
+    {
+        return await _db.Equipments.AnyAsync(x => x.Id == equipmentId, ct);
+    }
+
+    public async Task<CharacterEquipment?> GetEquipmentAsync(int characterId, int equipmentId, CancellationToken ct)
+    {
+        return await _db.CharacterEquipments
+            .FirstOrDefaultAsync(x => x.CharacterId == characterId && x.EquipmentId == equipmentId, ct);
+    }
+
+    public async Task AddEquipmentAsync(CharacterEquipment equipment, CancellationToken ct)
+    {
+        await _db.CharacterEquipments.AddAsync(equipment, ct);
+    }
+
     public Task SaveChangesAsync(CancellationToken ct) => _db.SaveChangesAsync(ct);
 }

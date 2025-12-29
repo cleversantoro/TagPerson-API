@@ -59,6 +59,22 @@ public class CharactersController : ControllerBase
         return updated ? NoContent() : NotFound();
     }
 
+    /// <summary>Adiciona equipamento ao personagem.</summary>
+    [HttpPost("{id:int}/equipments")]
+    [ProducesResponseType(StatusCodes.Status204NoContent)]
+    [ProducesResponseType(StatusCodes.Status400BadRequest)]
+    [ProducesResponseType(StatusCodes.Status404NotFound)]
+    public async Task<IActionResult> AddEquipment(int id, [FromBody] CharacterEquipmentRequestDto req)
+    {
+        var ok = await _service.AddEquipmentAsync(id, req, HttpContext.RequestAborted);
+        if (!ok)
+        {
+            return NotFound();
+        }
+
+        return NoContent();
+    }
+
     /// <summary>Exclui um personagem.</summary>
     [HttpDelete("{id:int}")]
     [ProducesResponseType(StatusCodes.Status204NoContent)]
