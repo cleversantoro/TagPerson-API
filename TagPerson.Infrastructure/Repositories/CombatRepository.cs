@@ -19,7 +19,7 @@ public sealed class CombatRepository : ICombatRepository
     {
         return await _db.CombatGroups
             .AsNoTracking()
-            .Where(x => x.ParentId == null || x.ParentId == -1)
+            //.Where(x => x.ParentId == null || x.ParentId == -1)
             .OrderBy(x => x.Name)
             .ToListAsync(ct);
     }

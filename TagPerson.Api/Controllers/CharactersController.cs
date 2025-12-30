@@ -59,6 +59,25 @@ public class CharactersController : ControllerBase
         return updated ? NoContent() : NotFound();
     }
 
+    /// <summary>Adiciona habilidade ao personagem.</summary>
+    [HttpPost("{id:int}/skills")]
+    [ProducesResponseType(StatusCodes.Status204NoContent)]
+    [ProducesResponseType(StatusCodes.Status404NotFound)]
+    public async Task<IActionResult> AddSkill(int id, [FromBody] CharacterSkillRequestDto req)
+    {
+        var ok = await _service.AddSkillAsync(id, req, HttpContext.RequestAborted);
+        return ok ? NoContent() : NotFound();
+    }
+
+    /// <summary>Lista especializacoes da habilidade do personagem.</summary>
+    [HttpGet("{id:int}/skills/{skillId:int}/specializations")]
+    [ProducesResponseType(typeof(IReadOnlyList<CharacterSkillSpecializationDto>), StatusCodes.Status200OK)]
+    public async Task<IActionResult> SkillSpecializations(int id, int skillId)
+    {
+        var list = await _service.GetSkillSpecializationsAsync(id, skillId, HttpContext.RequestAborted);
+        return Ok(list);
+    }
+
     /// <summary>Adiciona equipamento ao personagem.</summary>
     [HttpPost("{id:int}/equipments")]
     [ProducesResponseType(StatusCodes.Status204NoContent)]

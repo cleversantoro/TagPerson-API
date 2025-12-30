@@ -18,6 +18,8 @@ public sealed class CharacterRepository : ICharacterRepository
     {
         return await _db.Characters
             .AsNoTracking()
+            .Include(x => x.Race)
+            .Include(x => x.Profession)
             .OrderBy(x => x.Name)
             .ToListAsync(ct);
     }
@@ -52,6 +54,30 @@ public sealed class CharacterRepository : ICharacterRepository
         _db.Characters.Remove(entity);
         await _db.SaveChangesAsync(ct);
         return true;
+    }
+
+    public async Task<bool> SkillExistsAsync(int skillId, CancellationToken ct)
+    {
+        return await _db.Skills.AnyAsync(x => x.Id == skillId, ct);
+    }
+
+    public async Task<CharacterSkill?> GetSkillAsync(int characterId, int skillId, CancellationToken ct)
+    {
+        return await _db.CharacterSkills
+            .FirstOrDefaultAsync(x => x.CharacterId == characterId && x.SkillId == skillId, ct);
+    }
+
+    public async Task AddSkillAsync(CharacterSkill skill, CancellationToken ct)
+    {
+        await _db.CharacterSkills.AddAsync(skill, ct);
+    }
+
+    public async Task<IReadOnlyList<CharacterSkillSpecialization>> ListSkillSpecializationsAsync(int characterId, int skillId, CancellationToken ct)
+    {
+        return await _db.CharacterSkillSpecializations
+            .AsNoTracking()
+            .Where(x => x.CharacterId == characterId && x.SkillId == skillId)
+            .ToListAsync(ct);
     }
 
     public async Task<bool> EquipmentExistsAsync(int equipmentId, CancellationToken ct)

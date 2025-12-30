@@ -21,7 +21,16 @@ public sealed class CharacterService : ICharacterService
     public async Task<IReadOnlyList<CharacterListItemDto>> ListAsync(CancellationToken ct)
     {
         var items = await _repo.ListAsync(ct);
-        return items.Select(c => new CharacterListItemDto(c.Id, c.Name, c.Level)).ToList();
+        return items
+            .Select(c => new CharacterListItemDto(
+                c.Id, 
+                c.Name, 
+                c.Level, 
+                c.Race is null ? null : new SimpleLookupDto(c.Race.Id, c.Race.Name),
+                c.Profession is null ? null : new SimpleLookupDto(c.Profession.Id, c.Profession.Name)
+            )
+        )
+        .ToList();
     }
 
     public async Task<CharacterSheetDto?> GetSheetAsync(int id, CancellationToken ct)
@@ -154,6 +163,45 @@ public sealed class CharacterService : ICharacterService
 
         await _repo.SaveChangesAsync(ct);
         return true;
+    }
+
+    public async Task<bool> AddSkillAsync(int id, CharacterSkillRequestDto request, CancellationToken ct)
+    {
+        var c = await _repo.GetAsync(id, ct);
+        if (c is null) return false;
+
+        var skillExists = await _repo.SkillExistsAsync(request.SkillId, ct);
+        if (!skillExists) return false;
+
+        var current = await _repo.GetSkillAsync(id, request.SkillId, ct);
+        if (current is null)
+        {
+            await _repo.AddSkillAsync(new CharacterSkill
+            {
+                CharacterId = id,
+                SkillId = request.SkillId,
+                Level = request.Level ?? 0
+            }, ct);
+        }
+        else if (request.Level.HasValue)
+        {
+            current.Level = request.Level;
+        }
+
+        await _repo.SaveChangesAsync(ct);
+        return true;
+    }
+
+    public async Task<IReadOnlyList<CharacterSkillSpecializationDto>> GetSkillSpecializationsAsync(int id, int skillId, CancellationToken ct)
+    {
+        var list = await _repo.ListSkillSpecializationsAsync(id, skillId, ct);
+        return list.Select(s => new CharacterSkillSpecializationDto(
+            s.Id,
+            s.SkillId ?? 0,
+            s.SkillSpecializationId,
+            s.Specialization,
+            s.Level
+        )).ToList();
     }
 
     public async Task<bool> AddEquipmentAsync(int id, CharacterEquipmentRequestDto request, CancellationToken ct)

@@ -20,7 +20,7 @@ public class CombatController : ControllerBase
         _service = service;
     }
 
-    /// <summary>Lista grupos pais.</summary>
+    /// <summary>Lista Tecnicas de Combate por profissão.</summary>
     [HttpGet("groups")]
     [ProducesResponseType(typeof(IReadOnlyList<CombatGroupDto>), StatusCodes.Status200OK)]
     public async Task<IActionResult> GroupParents()

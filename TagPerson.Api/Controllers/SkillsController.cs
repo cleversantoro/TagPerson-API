@@ -20,7 +20,7 @@ public class SkillsController : ControllerBase
         _service = service;
     }
 
-    /// <summary>Lista grupos pais.</summary>
+    /// <summary>Lista os grupos.</summary>
     [HttpGet("groups")]
     [ProducesResponseType(typeof(IReadOnlyList<SkillGroupDto>), StatusCodes.Status200OK)]
     public async Task<IActionResult> GroupParents()
@@ -29,7 +29,8 @@ public class SkillsController : ControllerBase
         return Ok(list);
     }
 
-    /// <summary>Lista grupos filhos de um pai.</summary>
+    /// <summary>Lista grupos pelo seu pai.</summary>
+    /// <param name="parentId">ID do grupo pai.</param>
     [HttpGet("groups/{parentId:int}/children")]
     [ProducesResponseType(typeof(IReadOnlyList<SkillGroupDto>), StatusCodes.Status200OK)]
     public async Task<IActionResult> GroupChildren(int parentId)

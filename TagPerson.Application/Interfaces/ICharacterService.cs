@@ -8,6 +8,8 @@ public interface ICharacterService
     Task<CharacterSheetDto?> GetSheetAsync(int id, CancellationToken ct);
     Task<CharacterSheetDto> CreateAsync(CreateCharacterRequestDto request, CancellationToken ct);
     Task<bool> UpdateAsync(int id, UpdateCharacterRequestDto request, CancellationToken ct);
+    Task<bool> AddSkillAsync(int id, CharacterSkillRequestDto request, CancellationToken ct);
+    Task<IReadOnlyList<CharacterSkillSpecializationDto>> GetSkillSpecializationsAsync(int id, int skillId, CancellationToken ct);
     Task<bool> AddEquipmentAsync(int id, CharacterEquipmentRequestDto request, CancellationToken ct);
     Task<bool> DeleteAsync(int id, CancellationToken ct);
 }

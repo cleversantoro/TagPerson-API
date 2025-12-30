@@ -19,7 +19,7 @@ public sealed class SkillRepository : ISkillRepository
     {
         return await _db.SkillGroups
             .AsNoTracking()
-            .Where(x => x.ParentId == null || x.ParentId == 1)
+            .Where(x => x.ParentId == null || x.ParentId == -1)
             .OrderBy(x => x.Name)
             .ToListAsync(ct);
     }
@@ -35,10 +35,13 @@ public sealed class SkillRepository : ISkillRepository
 
     public async Task<IReadOnlyList<SkillFromGroupDto>> GetSkillsFromGroupAsync(int groupId, CancellationToken ct)
     {
-        return await _db.SkillGroupCosts
+        return await _db.Skills
             .AsNoTracking()
             .Where(x => x.SkillGroupId == groupId)
-            .Join(_db.Skills.AsNoTracking(), cost => cost.SkillId, skill => skill.Id, (cost, skill) => new { cost, skill })
+            .Join(_db.SkillGroupCosts.AsNoTracking(),
+                skill => skill.Id,
+                cost => cost.SkillId,
+                (skill, cost) => new { skill, cost })
             .OrderBy(x => x.skill.Name)
             .Select(x => new SkillFromGroupDto(
                 x.skill.Id,
