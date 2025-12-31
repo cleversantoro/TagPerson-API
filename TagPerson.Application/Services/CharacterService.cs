@@ -47,6 +47,7 @@ public sealed class CharacterService : ICharacterService
             c.Player,
             c.Race is null ? null : new SimpleLookupDto(c.Race.Id, c.Race.Name),
             c.Profession is null ? null : new SimpleLookupDto(c.Profession.Id, c.Profession.Name),
+            c.Specialization is null ? null : new SimpleLookupDto(c.Specialization.Id, c.Specialization.Name),
             new CharacterAttributesDto(
                 c.AttAgi,
                 c.AttPer,
@@ -187,6 +188,57 @@ public sealed class CharacterService : ICharacterService
         {
             current.Level = request.Level;
         }
+
+        await _repo.SaveChangesAsync(ct);
+        return true;
+    }
+
+    public async Task<bool> AddCombatSkillAsync(int id, CharacterCombatSkillRequestDto request, CancellationToken ct)
+    {
+        var c = await _repo.GetAsync(id, ct);
+        if (c is null) return false;
+
+        var skillExists = await _repo.CombatSkillExistsAsync(request.CombatSkillId, ct);
+        if (!skillExists) return false;
+
+        var current = await _repo.GetCombatSkillAsync(id, request.CombatSkillId, ct);
+        if (current is null)
+        {
+            await _repo.AddCombatSkillAsync(new CharacterCombatSkill
+            {
+                CharacterId = id,
+                CombatSkillId = request.CombatSkillId,
+                Level = request.Level ?? 0
+            }, ct);
+        }
+        else if (request.Level.HasValue)
+        {
+            current.Level = request.Level;
+        }
+
+        await _repo.SaveChangesAsync(ct);
+        return true;
+    }
+
+    public async Task<bool> AddSkillSpecializationAsync(int id, int skillId, CharacterSkillSpecializationRequestDto request, CancellationToken ct)
+    {
+        var c = await _repo.GetAsync(id, ct);
+        if (c is null) return false;
+
+        var skillExists = await _repo.SkillExistsAsync(skillId, ct);
+        if (!skillExists) return false;
+
+        var current = await _repo.GetSkillAsync(id, skillId, ct);
+        if (current is null) return false;
+
+        await _repo.AddSkillSpecializationAsync(new CharacterSkillSpecialization
+        {
+            CharacterId = id,
+            SkillId = skillId,
+            SkillSpecializationId = request.SkillSpecializationId,
+            Specialization = request.Specialization,
+            Level = request.Level
+        }, ct);
 
         await _repo.SaveChangesAsync(ct);
         return true;

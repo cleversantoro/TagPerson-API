@@ -61,7 +61,7 @@ public sealed class SkillRepository : ISkillRepository
             .AsNoTracking()
             .Where(x => x.SkillId == skillId)
             .OrderBy(x => x.Suggestion)
-            .Select(x => new SkillSpecializationSuggestionDto(x.SkillId ?? skillId, x.Suggestion))
+            .Select(x => new SkillSpecializationSuggestionDto(x.Id, x.SkillId ?? skillId, x.Suggestion))
             .ToListAsync(ct);
     }
 }

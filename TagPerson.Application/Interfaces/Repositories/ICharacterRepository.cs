@@ -12,7 +12,11 @@ public interface ICharacterRepository
     Task<bool> SkillExistsAsync(int skillId, CancellationToken ct);
     Task<CharacterSkill?> GetSkillAsync(int characterId, int skillId, CancellationToken ct);
     Task AddSkillAsync(CharacterSkill skill, CancellationToken ct);
+    Task AddSkillSpecializationAsync(CharacterSkillSpecialization specialization, CancellationToken ct);
     Task<IReadOnlyList<CharacterSkillSpecialization>> ListSkillSpecializationsAsync(int characterId, int skillId, CancellationToken ct);
+    Task<bool> CombatSkillExistsAsync(int combatSkillId, CancellationToken ct);
+    Task<CharacterCombatSkill?> GetCombatSkillAsync(int characterId, int combatSkillId, CancellationToken ct);
+    Task AddCombatSkillAsync(CharacterCombatSkill skill, CancellationToken ct);
     Task<bool> EquipmentExistsAsync(int equipmentId, CancellationToken ct);
     Task<CharacterEquipment?> GetEquipmentAsync(int characterId, int equipmentId, CancellationToken ct);
     Task AddEquipmentAsync(CharacterEquipment equipment, CancellationToken ct);

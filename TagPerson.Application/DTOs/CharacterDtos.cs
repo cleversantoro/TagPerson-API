@@ -14,6 +14,7 @@ public sealed record CharacterSheetDto(
     string? Player,
     SimpleLookupDto? Race,
     SimpleLookupDto? Profession,
+    SimpleLookupDto? Specialization,
     CharacterAttributesDto Attributes,
     CharacterPointsDto Points,
     CharacterFeaturesDto Features,
@@ -72,6 +73,12 @@ public sealed record CharacterSkillSpecializationDto(
     int? Level
 );
 
+public sealed record CharacterSkillSpecializationRequestDto(
+    string? Specialization,
+    int? Level,
+    int? SkillSpecializationId
+);
+
 public sealed record CharacterSpellDto(
     int SpellId,
     string Name,
@@ -97,6 +104,11 @@ public sealed record CharacterEquipmentRequestDto(
 
 public sealed record CharacterSkillRequestDto(
     int SkillId,
+    int? Level
+);
+
+public sealed record CharacterCombatSkillRequestDto(
+    int CombatSkillId,
     int? Level
 );
 
@@ -147,7 +159,7 @@ public sealed record SkillFromGroupDto(
     string? AttributeCode
 );
 
-public sealed record SkillSpecializationSuggestionDto(int SkillId, string? Suggestion);
+public sealed record SkillSpecializationSuggestionDto(int Id, int SkillId, string? Suggestion);
 
 #endregion
 
