@@ -34,4 +34,10 @@ public sealed class SkillService : ISkillService
     {
         return await _repo.GetSpecializationSuggestionsAsync(skillId, ct);
     }
+
+    public async Task<IReadOnlyList<SkillImprovedDto>> GetImprovedAsync(int skillId, CancellationToken ct)
+    {
+        return await _repo.GetImprovedAsync(skillId, ct);
+    }
+
 }

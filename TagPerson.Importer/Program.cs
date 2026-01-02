@@ -187,7 +187,7 @@ foreach (var c in combats)
         Id = I0(c["id"]),
         Name = S(c.TryGetValue("nome", out var n) ? n : c["name"]) ?? "",
         AttributeCode = S(c.TryGetValue("atributo", out var a) ? a : null),
-        SkillGroupId = I(c.TryGetValue("id_habilidade_grupo", out var hgid) ? hgid : null),
+        CombatGroupId = I(c.TryGetValue("id_combate_grupo", out var hgid) ? hgid : null),
         CategoryId = I(c.TryGetValue("id_categoria", out var cid) ? cid : null),
         Bonus = I(c.TryGetValue("bonus", out var b) ? b : null),
         Effect = S(c.TryGetValue("efeito", out var ef) ? ef : null),

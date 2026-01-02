@@ -56,4 +56,14 @@ public class SkillsController : ControllerBase
         var list = await _service.GetSpecializationSuggestionsAsync(skillId, HttpContext.RequestAborted);
         return Ok(list);
     }
+
+    /// <summary>Lista habilidades aperfeicoads por habilidade.</summary>
+    [HttpGet("{skillId:int}/improved")]
+    [ProducesResponseType(typeof(IReadOnlyList<SkillImprovedDto>), StatusCodes.Status200OK)]
+    public async Task<IActionResult> Improved(int skillId)
+    {
+        var list = await _service.GetImprovedAsync(skillId, HttpContext.RequestAborted);
+        return Ok(list);
+    }
+
 }

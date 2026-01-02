@@ -17,7 +17,8 @@ public class AppDbContext : DbContext
     public DbSet<Skill> Skills => Set<Skill>();
     public DbSet<SkillGroup> SkillGroups => Set<SkillGroup>();
     public DbSet<SkillGroupCost> SkillGroupCosts => Set<SkillGroupCost>();
-    public DbSet<SkillSpecializationSuggestion> SkillSpecializationSuggestions => Set<SkillSpecializationSuggestion>();
+    public DbSet<SkillSpecialization> SkillSpecialization => Set<SkillSpecialization>();
+    public DbSet<SkillImproved> SkillImproved => Set<SkillImproved>();
     public DbSet<CombatGroup> CombatGroups => Set<CombatGroup>();
     public DbSet<CombatGroupCost> CombatGroupCosts => Set<CombatGroupCost>();
     public DbSet<CombatSkill> CombatSkills => Set<CombatSkill>();

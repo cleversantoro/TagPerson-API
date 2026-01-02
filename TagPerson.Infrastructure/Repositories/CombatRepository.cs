@@ -39,18 +39,24 @@ public sealed class CombatRepository : ICombatRepository
             .AsNoTracking()
             .Where(x => x.CombatGroupId == groupId)
             .Join(_db.CombatSkills.AsNoTracking(),
-                cost => cost.CombatSkillId,
+                combatgroupcost => combatgroupcost.CombatSkillId,
                 combat => combat.Id,
-                (cost, combat) => new { cost, combat })
+                (combatgroupcost, combat) => new { combatgroupcost, combat })
             .OrderBy(x => x.combat.Name)
             .Select(x => new CombatFromGroupDto(
                 x.combat.Id,
                 x.combat.Name,
-                x.cost.Cost,
+                x.combatgroupcost.Cost,
                 x.combat.Bonus,
+                x.combatgroupcost.Reduction,
                 x.combat.HasSpecialization,
                 x.combat.AttributeCode,
-                x.combat.CategoryId
+                x.combat.CategoryId,
+                x.combat.Effect,
+                x.combat.Requisite,
+                x.combat.Notes,
+                x.combat.RollTable,
+                x.combat.Improvement
             ))
             .ToListAsync(ct);
     }

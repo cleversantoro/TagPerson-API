@@ -57,11 +57,21 @@ public sealed class SkillRepository : ISkillRepository
 
     public async Task<IReadOnlyList<SkillSpecializationSuggestionDto>> GetSpecializationSuggestionsAsync(int skillId, CancellationToken ct)
     {
-        return await _db.SkillSpecializationSuggestions
+        return await _db.SkillSpecialization
             .AsNoTracking()
             .Where(x => x.SkillId == skillId)
             .OrderBy(x => x.Suggestion)
             .Select(x => new SkillSpecializationSuggestionDto(x.Id, x.SkillId ?? skillId, x.Suggestion))
+            .ToListAsync(ct);
+    }
+
+    public async Task<IReadOnlyList<SkillImprovedDto>> GetImprovedAsync(int skillId, CancellationToken ct)
+    {
+        return await _db.SkillImproved
+            .AsNoTracking()
+            .Where(x => x.SkillId == skillId)
+            .OrderBy(x => x.Description)
+            .Select(x => new SkillImprovedDto(x.Id, x.SkillId ?? skillId, x.SkillGroupId, x.Description))
             .ToListAsync(ct);
     }
 }

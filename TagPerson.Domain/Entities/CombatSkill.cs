@@ -7,7 +7,7 @@ namespace TagPerson.Domain.Entities;
 public class CombatSkill
 {
     [Key] [Column("id")] public int Id { get; set; }
-    [Column("id_habilidade_grupo")] public int? SkillGroupId { get; set; }
+    [Column("id_combate_grupo")] public int? CombatGroupId { get; set; }
     [Column("id_categoria")] public int? CategoryId { get; set; }
     [Column("nome")] [MaxLength(50)] public string Name { get; set; } = "";
     [Column("atributo")] [MaxLength(3)] public string? AttributeCode { get; set; }

@@ -8,4 +8,5 @@ public interface ISkillService
     Task<IReadOnlyList<SkillGroupDto>> GetGroupChildrenAsync(int parentId, CancellationToken ct);
     Task<IReadOnlyList<SkillFromGroupDto>> GetSkillsFromGroupAsync(int groupId, CancellationToken ct);
     Task<IReadOnlyList<SkillSpecializationSuggestionDto>> GetSpecializationSuggestionsAsync(int skillId, CancellationToken ct);
+    Task<IReadOnlyList<SkillImprovedDto>> GetImprovedAsync(int skillId, CancellationToken ct);
 }

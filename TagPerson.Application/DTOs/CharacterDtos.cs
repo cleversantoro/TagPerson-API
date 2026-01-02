@@ -161,6 +161,8 @@ public sealed record SkillFromGroupDto(
 
 public sealed record SkillSpecializationSuggestionDto(int Id, int SkillId, string? Suggestion);
 
+public sealed record SkillImprovedDto(int Id, int SkillId, int? SkillGroupId, string? Description);
+
 #endregion
 
 #region Magia
@@ -186,10 +188,16 @@ public sealed record CombatFromGroupDto(
     int Id,
     string Name,
     int? Cost,
+    int? Reduction,
     int? Bonus,
     int? HasSpecialization,
     string? AttributeCode,
-    int? CategoryId
+    int? CategoryId,
+    string? Effect,
+    string? Requisite,
+    string? Notes,
+    string? RollTable,
+    string? Improvement
 );
 
 #endregion

@@ -20,7 +20,7 @@ public class CombatController : ControllerBase
         _service = service;
     }
 
-    /// <summary>Lista Tecnicas de Combate por profissão.</summary>
+    /// <summary>Lista todas as técnicas de Combate.</summary>
     [HttpGet("groups")]
     [ProducesResponseType(typeof(IReadOnlyList<CombatGroupDto>), StatusCodes.Status200OK)]
     public async Task<IActionResult> GroupParents()
@@ -29,8 +29,8 @@ public class CombatController : ControllerBase
         return Ok(list);
     }
 
-    /// <summary>Lista grupos filhos de um pai.</summary>
-    [HttpGet("groups/{parentId:int}/children")]
+    /// <summary>Lista técnicas pelo pai.</summary>
+    [HttpGet("groups/{parentId:int}/combat_children")]
     [ProducesResponseType(typeof(IReadOnlyList<CombatGroupDto>), StatusCodes.Status200OK)]
     public async Task<IActionResult> GroupChildren(int parentId)
     {
@@ -39,7 +39,7 @@ public class CombatController : ControllerBase
     }
 
     /// <summary>Lista tecnicas por grupo.</summary>
-    [HttpGet("groups/{groupId:int}/items")]
+    [HttpGet("groups/{groupId:int}/combat_items")]
     [ProducesResponseType(typeof(IReadOnlyList<CombatFromGroupDto>), StatusCodes.Status200OK)]
     public async Task<IActionResult> ItemsFromGroup(int groupId)
     {
