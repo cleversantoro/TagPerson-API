@@ -67,4 +67,5 @@ public class Character
     public ICollection<CharacterSpell> Spells { get; set; } = new List<CharacterSpell>();
     public ICollection<CharacterCombatSkill> CombatSkills { get; set; } = new List<CharacterCombatSkill>();
     public ICollection<CharacterEquipment> Equipments { get; set; } = new List<CharacterEquipment>();
+    public ICollection<CharacterCharacterization> Characterizations { get; set; } = new List<CharacterCharacterization>();
 }

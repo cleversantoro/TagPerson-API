@@ -9,9 +9,15 @@ public interface ICharacterRepository
     Task<Character?> GetSheetAsync(int id, CancellationToken ct);
     Task AddAsync(Character character, CancellationToken ct);
     Task<bool> DeleteAsync(int id, CancellationToken ct);
+    
+    Task<bool> CharacterizationExistsAsync(int characterizationId, CancellationToken ct);
+    Task AddCharacterizationAsync(CharacterCharacterization characterization, CancellationToken ct);
+    Task<CharacterCharacterization?> GetCharacterizationAsync(int characterId, int characterizationId, CancellationToken ct);
+    
     Task<bool> SkillExistsAsync(int skillId, CancellationToken ct);
-    Task<CharacterSkill?> GetSkillAsync(int characterId, int skillId, CancellationToken ct);
     Task AddSkillAsync(CharacterSkill skill, CancellationToken ct);
+    Task<CharacterSkill?> GetSkillAsync(int characterId, int skillId, CancellationToken ct);
+
     Task AddSkillSpecializationAsync(CharacterSkillSpecialization specialization, CancellationToken ct);
     Task<IReadOnlyList<CharacterSkillSpecialization>> ListSkillSpecializationsAsync(int characterId, int skillId, CancellationToken ct);
     Task<bool> CombatSkillExistsAsync(int combatSkillId, CancellationToken ct);

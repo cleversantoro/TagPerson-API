@@ -40,6 +40,7 @@ public sealed class CharacterRepository : ICharacterRepository
             .Include(x => x.Spells).ThenInclude(x => x.Spell)
             .Include(x => x.CombatSkills).ThenInclude(x => x.CombatSkill)
             .Include(x => x.Equipments).ThenInclude(x => x.Equipment).ThenInclude(e => e.DefenseStats)
+            .Include(x => x.Characterizations).ThenInclude(x => x.Characterization)
             .FirstOrDefaultAsync(x => x.Id == id, ct);
     }
 
@@ -60,6 +61,22 @@ public sealed class CharacterRepository : ICharacterRepository
     public async Task<bool> SkillExistsAsync(int skillId, CancellationToken ct)
     {
         return await _db.Skills.AnyAsync(x => x.Id == skillId, ct);
+    }
+
+    public async Task<bool> CharacterizationExistsAsync(int characterizationId, CancellationToken ct)
+    {
+        return await _db.Characterizations.AnyAsync(x => x.Id == characterizationId, ct);
+    }
+
+    public async Task AddCharacterizationAsync(CharacterCharacterization characterization, CancellationToken ct)
+    {
+        await _db.CharacterCharacterizations.AddAsync(characterization, ct);
+    }
+
+    public async Task<CharacterCharacterization?> GetCharacterizationAsync(int characterId, int characterizationId, CancellationToken ct)
+    {
+        return await _db.CharacterCharacterizations
+            .FirstOrDefaultAsync(x => x.CharacterId == characterId && x.CharacterizationId == characterizationId, ct);
     }
 
     public async Task<CharacterSkill?> GetSkillAsync(int characterId, int skillId, CancellationToken ct)
@@ -119,4 +136,5 @@ public sealed class CharacterRepository : ICharacterRepository
     }
 
     public Task SaveChangesAsync(CancellationToken ct) => _db.SaveChangesAsync(ct);
+
 }

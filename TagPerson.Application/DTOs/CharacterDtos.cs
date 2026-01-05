@@ -22,7 +22,8 @@ public sealed record CharacterSheetDto(
     IReadOnlyList<CharacterSkillDto> Skills,
     IReadOnlyList<CharacterSpellDto> Spells,
     IReadOnlyList<CharacterCombatSkillDto> Combat,
-    IReadOnlyList<CharacterEquipmentDto> Equipments
+    IReadOnlyList<CharacterEquipmentDto> Equipments,
+    IReadOnlyList<CharacterCharacterizationDto> Characterizations
 );
 
 public sealed record CharacterAttributesDto(
@@ -96,6 +97,13 @@ public sealed record CharacterCombatSkillDto(
 );
 
 public sealed record CharacterEquipmentDto(int EquipmentId, string Name, int? Qty);
+
+public sealed record CharacterCharacterizationDto(int CharacterizationId, string Name, int? Level);
+
+public sealed record CharacterCharacterizationRequestDto(
+    int CharacterizationId,
+    int? Level
+);
 
 public sealed record CharacterEquipmentRequestDto(
     int EquipmentId,

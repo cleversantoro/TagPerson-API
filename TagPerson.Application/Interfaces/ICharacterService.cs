@@ -11,7 +11,8 @@ public interface ICharacterService
     Task<bool> AddSkillAsync(int id, CharacterSkillRequestDto request, CancellationToken ct);
     Task<bool> AddCombatSkillAsync(int id, CharacterCombatSkillRequestDto request, CancellationToken ct);
     Task<bool> AddSkillSpecializationAsync(int id, int skillId, CharacterSkillSpecializationRequestDto request, CancellationToken ct);
-    Task<IReadOnlyList<CharacterSkillSpecializationDto>> GetSkillSpecializationsAsync(int id, int skillId, CancellationToken ct);
     Task<bool> AddEquipmentAsync(int id, CharacterEquipmentRequestDto request, CancellationToken ct);
+    Task<bool> AddCharacterizationAsync(int id, CharacterCharacterizationRequestDto request, CancellationToken ct);
+    Task<IReadOnlyList<CharacterSkillSpecializationDto>> GetSkillSpecializationsAsync(int id, int skillId, CancellationToken ct);
     Task<bool> DeleteAsync(int id, CancellationToken ct);
 }

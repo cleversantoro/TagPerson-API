@@ -114,6 +114,22 @@ public class CharactersController : ControllerBase
         return NoContent();
     }
 
+    /// <summary>Adiciona caracterização ao personagem.</summary>
+    [HttpPost("{id:int}/characterizations")]
+    [ProducesResponseType(StatusCodes.Status204NoContent)]
+    [ProducesResponseType(StatusCodes.Status400BadRequest)]
+    [ProducesResponseType(StatusCodes.Status404NotFound)]
+    public async Task<IActionResult> AddCharacterization(int id, [FromBody] CharacterCharacterizationRequestDto req)
+    {
+        var ok = await _service.AddCharacterizationAsync(id, req, HttpContext.RequestAborted);
+        if (!ok)
+        {
+            return NotFound();
+        }
+
+        return NoContent();
+    }
+
     /// <summary>Exclui um personagem.</summary>
     [HttpDelete("{id:int}")]
     [ProducesResponseType(StatusCodes.Status204NoContent)]

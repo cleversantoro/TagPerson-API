@@ -101,6 +101,11 @@ public sealed class CharacterService : ICharacterService
                 e.EquipmentId,
                 e.Equipment.Name,
                 e.Qty
+            )).ToList(),
+            c.Characterizations.Select(ch => new CharacterCharacterizationDto(
+                ch.CharacterizationId,
+                ch.Characterization.Name,
+                ch.Level
             )).ToList()
         );
     }
@@ -161,6 +166,33 @@ public sealed class CharacterService : ICharacterService
         c.PointsWeapon = request.PointsWeapon;
         c.PointsCombat = request.PointsCombat;
         c.PointsMagic = request.PointsMagic;
+
+        await _repo.SaveChangesAsync(ct);
+        return true;
+    }
+
+    public async Task<bool> AddCharacterizationAsync(int id, CharacterCharacterizationRequestDto request, CancellationToken ct)
+    {
+        var c = await _repo.GetAsync(id, ct);
+        if (c is null) return false;
+
+        var characterizatonExists = await _repo.CharacterizationExistsAsync(request.CharacterizationId, ct);
+        if (!characterizatonExists) return false;
+
+        var current = await _repo.GetCharacterizationAsync(id, request.CharacterizationId, ct);
+        if (current is null)
+        {
+            await _repo.AddCharacterizationAsync(new CharacterCharacterization
+            {
+                CharacterId = id,
+                CharacterizationId = request.CharacterizationId,
+                Level = request.Level ?? 0
+            }, ct);
+        }
+        else if (request.Level.HasValue)
+        {
+            current.Level = request.Level;
+        }
 
         await _repo.SaveChangesAsync(ct);
         return true;
