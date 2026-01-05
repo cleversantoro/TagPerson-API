@@ -9,6 +9,7 @@ public static class ServiceCollectionExtensions
     public static IServiceCollection AddApplication(this IServiceCollection services)
     {
         services.AddScoped<ICharacterService, CharacterService>();
+        services.AddScoped<ICharacterizationService, CharacterizationService>();
         services.AddScoped<ILookupService, LookupService>();
         services.AddScoped<IUserService, UserService>();
         services.AddScoped<ISkillService, SkillService>();

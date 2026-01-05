@@ -24,6 +24,7 @@ public static class ServiceCollectionExtensions
         services.Configure<AuthOptions>(configuration.GetSection(AuthOptions.SectionName));
 
         services.AddScoped<ICharacterRepository, CharacterRepository>();
+        services.AddScoped<ICharacterizationRepository, CharacterizationRepository>();
         services.AddScoped<ILookupRepository, LookupRepository>();
         services.AddScoped<IAuthRepository, AuthRepository>();
         services.AddScoped<IUserRepository, UserRepository>();

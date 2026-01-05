@@ -7,36 +7,58 @@ public class AppDbContext : DbContext
 {
     public AppDbContext(DbContextOptions<AppDbContext> options) : base(options) { }
 
-    public DbSet<Character> Characters => Set<Character>();
+    #region Auxiliares
     public DbSet<AppUser> Users => Set<AppUser>();
     public DbSet<Race> Races => Set<Race>();
     public DbSet<Profession> Professions => Set<Profession>();
     public DbSet<Specialization> Specializations => Set<Specialization>();
     public DbSet<Place> Places => Set<Place>();
+    public DbSet<Category> Categories => Set<Category>();
+    #endregion
 
+    #region Habilidades
     public DbSet<Skill> Skills => Set<Skill>();
     public DbSet<SkillGroup> SkillGroups => Set<SkillGroup>();
     public DbSet<SkillGroupCost> SkillGroupCosts => Set<SkillGroupCost>();
     public DbSet<SkillSpecialization> SkillSpecialization => Set<SkillSpecialization>();
     public DbSet<SkillImproved> SkillImproved => Set<SkillImproved>();
+    #endregion
+
+    #region Caracterizações
+    public DbSet<Characterization> Characterizations => Set<Characterization>();
+    public DbSet<CharacterizationGroup> CharacterizationGroups => Set<CharacterizationGroup>();
+    public DbSet<CharacterizationGroupCost> CharacterizationGroupCosts => Set<CharacterizationGroupCost>();
+    public DbSet<CharacterizationType> CharacterizationTypes => Set<CharacterizationType>();
+    #endregion
+
+    #region Combate
     public DbSet<CombatGroup> CombatGroups => Set<CombatGroup>();
     public DbSet<CombatGroupCost> CombatGroupCosts => Set<CombatGroupCost>();
     public DbSet<CombatSkill> CombatSkills => Set<CombatSkill>();
+    #endregion
+
+    #region Magia
     public DbSet<Spell> Spells => Set<Spell>();
     public DbSet<SpellGroup> SpellGroups => Set<SpellGroup>();
     public DbSet<SpellGroupCost> SpellGroupCosts => Set<SpellGroupCost>();
-    public DbSet<Category> Categories => Set<Category>();
+    #endregion
 
+    #region Equipamentos
     public DbSet<Equipment> Equipments => Set<Equipment>();
     public DbSet<EquipmentGroup> EquipmentGroups => Set<EquipmentGroup>();
     public DbSet<EquipmentWeaponStats> EquipmentWeaponStats => Set<EquipmentWeaponStats>();
     public DbSet<EquipmentDefenseStats> EquipmentDefenseStats => Set<EquipmentDefenseStats>();
+    #endregion
 
+    #region Personagem
+    public DbSet<Character> Characters => Set<Character>();
     public DbSet<CharacterSkill> CharacterSkills => Set<CharacterSkill>();
     public DbSet<CharacterSpell> CharacterSpells => Set<CharacterSpell>();
     public DbSet<CharacterCombatSkill> CharacterCombatSkills => Set<CharacterCombatSkill>();
     public DbSet<CharacterEquipment> CharacterEquipments => Set<CharacterEquipment>();
     public DbSet<CharacterSkillSpecialization> CharacterSkillSpecializations => Set<CharacterSkillSpecialization>();
+    public DbSet<CharacterCharacterization> CharacterCharacterizations => Set<CharacterCharacterization>();
+    #endregion
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
@@ -45,6 +67,7 @@ public class AppDbContext : DbContext
         modelBuilder.Entity<CharacterCombatSkill>().HasKey(x => new { x.CharacterId, x.CombatSkillId });
         modelBuilder.Entity<CharacterEquipment>().HasKey(x => new { x.CharacterId, x.EquipmentId });
         modelBuilder.Entity<CharacterSkillSpecialization>().HasKey(x => x.Id);
+        modelBuilder.Entity<CharacterCharacterization>().HasKey(x => new { x.CharacterId, x.CharacterizationId });
 
         modelBuilder.Entity<EquipmentWeaponStats>().HasKey(x => x.Id);
         modelBuilder.Entity<EquipmentDefenseStats>().HasKey(x => x.Id);
