@@ -26,4 +26,6 @@ public class Race
     [Column("peso_inicio")] public int? BaseWeight { get; set; }
     [Column("idade_minima")] public int? AgeMin { get; set; }
     [Column("idade_maxima")] public int? AgeMax { get; set; }
+
+    public ICollection<RaceProfession> Professions { get; set; } = new List<RaceProfession>();
 }

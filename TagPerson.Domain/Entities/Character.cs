@@ -11,8 +11,8 @@ public class Character
     [Column("nome")] [MaxLength(100)] public string Name { get; set; } = "";
     [Column("jogador")] [MaxLength(100)] public string? Player { get; set; }
     [Column("image_file")] [MaxLength(60)] public string? ImageFile { get; set; }
-
     [Column("nivel")] public int? Level { get; set; }
+    [Column("experiencia")] public int? Experience { get; set; }
 
     [Column("raca")] public int? RaceId { get; set; }
     public Race? Race { get; set; }
@@ -24,7 +24,10 @@ public class Character
     public Specialization? Specialization { get; set; }
 
     [Column("divindade")] public int? DeityId { get; set; }
-    [Column("classe_social")] [MaxLength(30)] public string? ClassSocial { get; set; }
+    public Deity? Deity { get; set; }
+
+    [Column("classe_social")] public int? ClassSocialId { get; set; }
+    public ClassSocial? ClassSocial { get; set; }
 
     [Column("local_nascimento")] public int? BirthPlaceId { get; set; }
     public Place? BirthPlace { get; set; }

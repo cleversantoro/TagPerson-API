@@ -23,4 +23,6 @@ public class Profession
 
     [Column("atributo_magia")] public int? AttributeForMagic { get; set; }
     [Column("id_magia_grupo")] public int? SpellGroup { get; set; }
+
+    public ICollection<RaceProfession> Races { get; set; } = new List<RaceProfession>();
 }

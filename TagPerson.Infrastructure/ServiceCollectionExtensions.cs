@@ -32,6 +32,7 @@ public static class ServiceCollectionExtensions
         services.AddScoped<ICombatRepository, CombatRepository>();
         services.AddScoped<ISpellRepository, SpellRepository>();
         services.AddScoped<IEquipmentRepository, EquipmentRepository>();
+        services.AddScoped<IRaceProfessionRepository, RaceProfessionRepository>();
         services.AddScoped<IAuthService, AuthService>();
         services.AddSingleton<JwtTokenService>();
         services.AddSingleton<IPasswordHasher, PasswordHasher>();

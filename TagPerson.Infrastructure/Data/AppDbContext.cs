@@ -11,6 +11,7 @@ public class AppDbContext : DbContext
     public DbSet<AppUser> Users => Set<AppUser>();
     public DbSet<Race> Races => Set<Race>();
     public DbSet<Profession> Professions => Set<Profession>();
+    public DbSet<RaceProfession> RaceProfessions => Set<RaceProfession>();
     public DbSet<Specialization> Specializations => Set<Specialization>();
     public DbSet<Place> Places => Set<Place>();
     public DbSet<Category> Categories => Set<Category>();
@@ -68,6 +69,7 @@ public class AppDbContext : DbContext
         modelBuilder.Entity<CharacterEquipment>().HasKey(x => new { x.CharacterId, x.EquipmentId });
         modelBuilder.Entity<CharacterSkillSpecialization>().HasKey(x => x.Id);
         modelBuilder.Entity<CharacterCharacterization>().HasKey(x => new { x.CharacterId, x.CharacterizationId });
+        modelBuilder.Entity<RaceProfession>().HasKey(x => new { x.RaceId, x.ProfessionId });
 
         modelBuilder.Entity<EquipmentWeaponStats>().HasKey(x => x.Id);
         modelBuilder.Entity<EquipmentDefenseStats>().HasKey(x => x.Id);
