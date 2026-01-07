@@ -29,7 +29,8 @@ public sealed record CharacterSheetDto(
     IReadOnlyList<CharacterSpellDto> Spells,
     IReadOnlyList<CharacterCombatSkillDto> Combat,
     IReadOnlyList<CharacterEquipmentDto> Equipments,
-    IReadOnlyList<CharacterCharacterizationDto> Characterizations
+    IReadOnlyList<CharacterCharacterizationDto> Characterizations,
+    IReadOnlyList<StartingEquipmentDto> StartingEquipments
 );
 
 public sealed record CharacterAttributesDto(
@@ -219,5 +220,7 @@ public sealed record CombatFromGroupDto(
 public sealed record CategoryDto(int Id, string Name, string? Icon);
 
 #endregion
+
+public sealed record StartingEquipmentDto(string Name);
 
 public sealed record SimpleLookupDto(int Id, string Name);

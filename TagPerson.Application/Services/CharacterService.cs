@@ -40,6 +40,8 @@ public sealed class CharacterService : ICharacterService
 
         var derived = _calculator.Calculate(c, c.Race, c.Profession, null, null, null);
 
+        var startingEquipments = ParseStartingEquipments(c.Profession?.StartingEquipment);
+
         return new CharacterSheetDto(
             c.Id,
             c.Name,
@@ -111,7 +113,8 @@ public sealed class CharacterService : ICharacterService
                 ch.CharacterizationId,
                 ch.Characterization.Name,
                 ch.Level
-            )).ToList()
+            )).ToList(),
+            startingEquipments
         );
     }
 
@@ -338,6 +341,28 @@ public sealed class CharacterService : ICharacterService
         Absorcao = stats.Absorcao,
         PontosMagia = stats.PontosMagia
     };
+
+    private static IReadOnlyList<StartingEquipmentDto> ParseStartingEquipments(string? startingEquipment)
+    {
+        if (string.IsNullOrWhiteSpace(startingEquipment)) return Array.Empty<StartingEquipmentDto>();
+
+        var equipments = startingEquipment.Split('|');
+        var result = new List<StartingEquipmentDto>();
+
+        foreach (var equipment in equipments)
+        {
+            var trimmed = equipment.Trim();
+            if (!string.IsNullOrWhiteSpace(trimmed))
+            {
+                result.Add(new StartingEquipmentDto(trimmed));
+            }
+        }
+
+        return result;
+    }
 }
+
+
+
 
 
