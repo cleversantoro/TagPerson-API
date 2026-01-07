@@ -46,6 +46,7 @@ public sealed class CharacterService : ICharacterService
             c.Level,
             c.Experience,
             c.Player,
+            c.ImageFile,
             c.ClassSocial is null ? null : new SimpleLookupDto(c.ClassSocial.Id, c.ClassSocial.Name),
             c.BirthPlace is null ? null : new SimpleLookupDto(c.BirthPlace.Id, c.BirthPlace.Name),
             c.Race is null ? null : new SimpleLookupDto(c.Race.Id, c.Race.Name),
@@ -75,9 +76,9 @@ public sealed class CharacterService : ICharacterService
                 c.Hair,
                 c.Skin,
                 c.Appearance,
-                c.History,
-                new CharacterCoinsDto(c.CoinsCopper, c.CoinsSilver, c.CoinsGold)
+                c.History
             ),
+            new CharacterCoinsDto(c.CoinsCopper, c.CoinsSilver, c.CoinsGold),
             Map(derived),
             c.Skills.Select(s => new CharacterSkillDto(
                 s.SkillId,

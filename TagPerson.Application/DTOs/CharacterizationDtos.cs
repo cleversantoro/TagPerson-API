@@ -21,4 +21,10 @@ public sealed record CharacterizationDto(
     int? IsAllowGame
 );
 
+public sealed record CharacterizationLookupDto(
+    int Id, 
+    string Name,
+    SimpleLookupDto? CharacterizationType,
+    SimpleLookupDto? CharacterizationGroup
+);
 

@@ -14,6 +14,9 @@ public class AppDbContext : DbContext
     public DbSet<RaceProfession> RaceProfessions => Set<RaceProfession>();
     public DbSet<Specialization> Specializations => Set<Specialization>();
     public DbSet<Place> Places => Set<Place>();
+    public DbSet<Deity> Deitys => Set<Deity>();
+    public DbSet<ClassSocial> ClassSocials => Set<ClassSocial>();
+    public DbSet<TimeLine> Timelines => Set<TimeLine>();
     public DbSet<Category> Categories => Set<Category>();
     #endregion
 

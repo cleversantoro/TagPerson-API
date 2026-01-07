@@ -24,7 +24,7 @@ public class RaceProfessionController : ControllerBase
     /// <summary>Retorna as profissões de uma raça específica.</summary>
     /// <param name="raceId">ID da raça</param>
     [HttpGet("races/{raceId}/professions")]
-    [ProducesResponseType(typeof(IReadOnlyList<SimpleLookupDto>), StatusCodes.Status200OK)]
+    [ProducesResponseType(typeof(IReadOnlyList<RaceDto>), StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
     public async Task<IActionResult> GetProfessionsByRace([FromRoute] int raceId) =>
         Ok(await _service.GetProfessionsByRaceAsync(raceId, HttpContext.RequestAborted));
@@ -32,7 +32,7 @@ public class RaceProfessionController : ControllerBase
     /// <summary>Retorna as raças de uma profissão específica.</summary>
     /// <param name="professionId">ID da profissão</param>
     [HttpGet("professions/{professionId}/races")]
-    [ProducesResponseType(typeof(IReadOnlyList<SimpleLookupDto>), StatusCodes.Status200OK)]
+    [ProducesResponseType(typeof(IReadOnlyList<ProfessionDto>), StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
     public async Task<IActionResult> GetRacesByProfession([FromRoute] int professionId) =>
         Ok(await _service.GetRacesByProfessionAsync(professionId, HttpContext.RequestAborted));

@@ -13,6 +13,7 @@ public sealed record CharacterSheetDto(
     int? Level,
     int? Experience,
     string? Player,
+    string? ImageFile,
     SimpleLookupDto? ClassSocial,
     SimpleLookupDto? BirthPlace,
     SimpleLookupDto? Race,
@@ -22,6 +23,7 @@ public sealed record CharacterSheetDto(
     CharacterAttributesDto Attributes,
     CharacterPointsDto Points,
     CharacterFeaturesDto Features,
+    CharacterCoinsDto Coins,
     DerivedStatsDto Derived,
     IReadOnlyList<CharacterSkillDto> Skills,
     IReadOnlyList<CharacterSpellDto> Spells,
@@ -57,8 +59,7 @@ public sealed record CharacterFeaturesDto(
     string? Hair,
     string? Skin,
     string? Appearance,
-    string? History,
-    CharacterCoinsDto Coins
+    string? History
 );
 
 public sealed record CharacterSkillDto(

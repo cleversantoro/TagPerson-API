@@ -62,4 +62,36 @@ public class LookupsController : ControllerBase
     [ProducesResponseType(typeof(IReadOnlyList<CategoryDto>), StatusCodes.Status200OK)]
     public async Task<IActionResult> Categories() =>
         Ok(await _service.CategoriesAsync(HttpContext.RequestAborted));
+
+    /// <summary>Lista de caracterizações para personagem.</summary>
+    [HttpGet("characterization")]
+    [ProducesResponseType(typeof(IReadOnlyList<CharacterizationLookupDto>), StatusCodes.Status200OK)]
+    public async Task<IActionResult> Characterization() => 
+        Ok(await _service.CharacterizationAsync(HttpContext.RequestAborted));
+
+
+    /// <summary>Lista de Localidade.</summary>
+    [HttpGet("place")]
+    [ProducesResponseType(typeof(IReadOnlyList<PlaceLookupDto>), StatusCodes.Status200OK)]
+    public async Task<IActionResult> Place() =>
+        Ok(await _service.PlaceAsync(HttpContext.RequestAborted));
+
+    /// <summary>Lista de Classe Social.</summary>
+    [HttpGet("socialclass")]
+    [ProducesResponseType(typeof(IReadOnlyList<ClassSocialLookupDto>), StatusCodes.Status200OK)]
+    public async Task<IActionResult> ClassSocial() =>
+        Ok(await _service.ClassSocialAsync(HttpContext.RequestAborted));
+
+    /// <summary>Lista de Divindades.</summary>
+    [HttpGet("deity")]
+    [ProducesResponseType(typeof(IReadOnlyList<DeityLookupDto>), StatusCodes.Status200OK)]
+    public async Task<IActionResult> Deity() =>
+        Ok(await _service.DeityAsync(HttpContext.RequestAborted));
+
+    /// <summary>Lista de Linha do Tempo.</summary>
+    [HttpGet("timeline")]
+    [ProducesResponseType(typeof(IReadOnlyList<TimeLineLookupDto>), StatusCodes.Status200OK)]
+    public async Task<IActionResult> TimeLine() =>
+        Ok(await _service.TimeLineAsync(HttpContext.RequestAborted));
+
 }

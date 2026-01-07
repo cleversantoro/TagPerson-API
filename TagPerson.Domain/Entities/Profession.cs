@@ -24,5 +24,8 @@ public class Profession
     [Column("atributo_magia")] public int? AttributeForMagic { get; set; }
     [Column("id_magia_grupo")] public int? SpellGroup { get; set; }
 
+    [Column("defesa_base")][MaxLength(2)] public string? BasicDefense { get; set; }
+    [Column("absorcao")][MaxLength(4)] public string? Absorption { get; set; }
+
     public ICollection<RaceProfession> Races { get; set; } = new List<RaceProfession>();
 }

@@ -34,4 +34,28 @@ public sealed class LookupRepository : ILookupRepository
 
     public async Task<IReadOnlyList<Category>> CategoriesAsync(CancellationToken ct) =>
         await _db.Categories.AsNoTracking().OrderBy(x => x.Name).ToListAsync(ct);
+
+    public async Task<IReadOnlyList<Characterization>> CharacterizationAsync(CancellationToken ct) =>
+        await _db.Characterizations
+        .AsNoTracking()
+        .Include(x => x.CharacterizationType)
+        .Include(x => x.CharacterizationGroup)
+        .OrderBy(x => x.Name).ToListAsync(ct);
+
+    public async Task<IReadOnlyList<Place>> PlaceAsync(CancellationToken ct) =>
+        await _db.Places.AsNoTracking().OrderBy(x => x.Name).ToListAsync(ct);
+
+    public async Task<IReadOnlyList<ClassSocial>> ClassSocialAsync(CancellationToken ct) =>
+        await _db.ClassSocials.AsNoTracking().OrderBy(x => x.Name).ToListAsync(ct);
+
+    public async Task<IReadOnlyList<Deity>> DeityAsync(CancellationToken ct) =>
+        await _db.Deitys.AsNoTracking().OrderBy(x => x.Name).ToListAsync(ct);
+
+    public async Task<IReadOnlyList<TimeLine>> TimeLineAsync(CancellationToken ct) =>
+        await _db.Timelines
+        .AsNoTracking()
+        .Include(x => x.Place)
+        .OrderBy(x => x.Year)
+        .ToListAsync(ct);
+
 }

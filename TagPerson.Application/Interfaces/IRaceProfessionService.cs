@@ -4,6 +4,6 @@ namespace TagPerson.Application.Interfaces;
 
 public interface IRaceProfessionService
 {
-    Task<IReadOnlyList<SimpleLookupDto>> GetProfessionsByRaceAsync(int raceId, CancellationToken ct);
-    Task<IReadOnlyList<SimpleLookupDto>> GetRacesByProfessionAsync(int professionId, CancellationToken ct);
+    Task<IReadOnlyList<ProfessionDto>> GetProfessionsByRaceAsync(int raceId, CancellationToken ct);
+    Task<IReadOnlyList<RaceDto>> GetRacesByProfessionAsync(int professionId, CancellationToken ct);
 }
