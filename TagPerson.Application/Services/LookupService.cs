@@ -104,4 +104,10 @@ public sealed class LookupService : ILookupService
           )
         ).ToList();
     }
+
+    public async Task<IReadOnlyList<SimpleLookupDto>> SpecializationAsync(CancellationToken ct)
+    {
+        var items = await _repo.SpecializationAsync(ct);
+        return items.Select(x => new SimpleLookupDto(x.Id, x.Name)).ToList();
+    }
 }

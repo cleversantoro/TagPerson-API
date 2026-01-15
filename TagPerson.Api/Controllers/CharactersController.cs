@@ -114,7 +114,7 @@ public class CharactersController : ControllerBase
         return NoContent();
     }
 
-    /// <summary>Adiciona caracteriza��o ao personagem.</summary>
+    /// <summary>Adiciona caracterização ao personagem.</summary>
     [HttpPost("{id:int}/characterizations")]
     [ProducesResponseType(StatusCodes.Status204NoContent)]
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
@@ -138,5 +138,26 @@ public class CharactersController : ControllerBase
     {
         var ok = await _service.DeleteAsync(id, HttpContext.RequestAborted);
         return ok ? NoContent() : NotFound();
+    }
+
+    /// <summary>Valida a distribuição de atributos do personagem.</summary>
+    [HttpPost("{id:int}/validate-attributes")]
+    [ProducesResponseType(typeof(AttributeDistributionResponseDto), StatusCodes.Status200OK)]
+    [ProducesResponseType(StatusCodes.Status404NotFound)]
+    public async Task<IActionResult> ValidateAttributes(int id, [FromBody] AttributeDistributionRequestDto req)
+    {
+        var result = await _service.ValidateAttributeDistributionAsync(id, req, HttpContext.RequestAborted);
+        return result is null ? NotFound() : Ok(result);
+    }
+
+    /// <summary>Aplica a distribuição de atributos do personagem.</summary>
+    [HttpPost("{id:int}/apply-attributes")]
+    [ProducesResponseType(StatusCodes.Status204NoContent)]
+    [ProducesResponseType(StatusCodes.Status400BadRequest)]
+    [ProducesResponseType(StatusCodes.Status404NotFound)]
+    public async Task<IActionResult> ApplyAttributes(int id, [FromBody] AttributeDistributionRequestDto req)
+    {
+        var result = await _service.ApplyAttributeDistributionAsync(id, req, HttpContext.RequestAborted);
+        return result.success ? NoContent() : BadRequest(result.message);
     }
 }

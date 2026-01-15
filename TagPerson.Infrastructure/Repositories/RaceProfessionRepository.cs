@@ -31,4 +31,11 @@ public sealed class RaceProfessionRepository : IRaceProfessionRepository
             .Select(rp => rp.Race)
             .ToListAsync(ct);
     }
+
+    public async Task<bool> ExistsAsync(int raceId, int professionId, CancellationToken ct)
+    {
+        return await _db.RaceProfessions
+            .AsNoTracking()
+            .AnyAsync(rp => rp.RaceId == raceId && rp.ProfessionId == professionId, ct);
+    }
 }

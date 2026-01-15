@@ -26,6 +26,8 @@ public sealed class RaceProfessionService : IRaceProfessionService
                     p.Description,
                     p.StartingEquipment,
                     p.CoinsCopper,
+                    p.CoinsSilver,
+                    p.CoinsGold,
                     p.HeroicEnergy,
                     p.SkillPoints,
                     p.WeaponPoints,
@@ -35,6 +37,7 @@ public sealed class RaceProfessionService : IRaceProfessionService
                     p.AttributeForMagic,
                     p.SpellGroup,
                     p.BasicDefense,
+                    p.WeaponDamageMaximun,
                     p.Absorption
                 )
             )

@@ -8,4 +8,9 @@ public interface ICombatRepository
     Task<IReadOnlyList<CombatGroup>> GetGroupParentsAsync(CancellationToken ct);
     Task<IReadOnlyList<CombatGroup>> GetGroupChildrenAsync(int parentId, CancellationToken ct);
     Task<IReadOnlyList<CombatFromGroupDto>> GetCombatFromGroupAsync(int groupId, CancellationToken ct);
+    Task<CombatSkill?> GetByIdAsync(int combatSkillId, CancellationToken ct);
+}
+
+public interface ICombatSkillRepository : ICombatRepository
+{
 }

@@ -30,6 +30,7 @@ public static class ServiceCollectionExtensions
         services.AddScoped<IUserRepository, UserRepository>();
         services.AddScoped<ISkillRepository, SkillRepository>();
         services.AddScoped<ICombatRepository, CombatRepository>();
+        services.AddScoped<ICombatSkillRepository, CombatRepository>();
         services.AddScoped<ISpellRepository, SpellRepository>();
         services.AddScoped<IEquipmentRepository, EquipmentRepository>();
         services.AddScoped<IRaceProfessionRepository, RaceProfessionRepository>();

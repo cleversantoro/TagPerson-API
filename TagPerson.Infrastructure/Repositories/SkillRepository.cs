@@ -74,4 +74,9 @@ public sealed class SkillRepository : ISkillRepository
             .Select(x => new SkillImprovedDto(x.Id, x.SkillId ?? skillId, x.SkillGroupId, x.Description))
             .ToListAsync(ct);
     }
+
+    public async Task<Skill?> GetByIdAsync(int skillId, CancellationToken ct)
+    {
+        return await _db.Skills.FirstOrDefaultAsync(x => x.Id == skillId, ct);
+    }
 }

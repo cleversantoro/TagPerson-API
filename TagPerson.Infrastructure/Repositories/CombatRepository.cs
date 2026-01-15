@@ -6,7 +6,7 @@ using TagPerson.Infrastructure.Data;
 
 namespace TagPerson.Infrastructure.Repositories;
 
-public sealed class CombatRepository : ICombatRepository
+public sealed class CombatRepository : ICombatRepository, ICombatSkillRepository
 {
     private readonly AppDbContext _db;
 
@@ -58,5 +58,10 @@ public sealed class CombatRepository : ICombatRepository
                 x.combat.Improvement
             ))
             .ToListAsync(ct);
+    }
+
+    public async Task<CombatSkill?> GetByIdAsync(int combatSkillId, CancellationToken ct)
+    {
+        return await _db.CombatSkills.FirstOrDefaultAsync(x => x.Id == combatSkillId, ct);
     }
 }

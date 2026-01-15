@@ -11,11 +11,19 @@ public sealed class CharacterService : ICharacterService
 {
     private readonly ICharacterRepository _repo;
     private readonly TagmarCalculator _calculator;
+    private readonly ICharacterInitializationService _characterInitialization;
+    private readonly AttributeCalculationService _attributeCalculation;
 
-    public CharacterService(ICharacterRepository repo, TagmarCalculator calculator)
+    public CharacterService(
+        ICharacterRepository repo,
+        TagmarCalculator calculator,
+        ICharacterInitializationService characterInitialization,
+        AttributeCalculationService attributeCalculation)
     {
         _repo = repo;
         _calculator = calculator;
+        _characterInitialization = characterInitialization;
+        _attributeCalculation = attributeCalculation;
     }
 
     public async Task<IReadOnlyList<CharacterListItemDto>> ListAsync(CancellationToken ct)
@@ -131,6 +139,18 @@ public sealed class CharacterService : ICharacterService
 
         await _repo.AddAsync(character, ct);
         await _repo.SaveChangesAsync(ct);
+
+        // Inicializar personagem com atributos, habilidades e magias baseado em raça/profissão
+        try
+        {
+            await _characterInitialization.InitializeCharacterAsync(character, ct);
+            await _repo.SaveChangesAsync(ct);
+        }
+        catch (InvalidOperationException)
+        {
+            // Se houver erro na inicialização, continua mesmo assim
+            // Você pode registrar o erro ou tratá-lo diferentemente conforme necessário
+        }
 
         var sheet = await _repo.GetSheetAsync(character.Id, ct);
         if (sheet is null)
@@ -327,6 +347,83 @@ public sealed class CharacterService : ICharacterService
     public Task<bool> DeleteAsync(int id, CancellationToken ct)
     {
         return _repo.DeleteAsync(id, ct);
+    }
+
+    public async Task<AttributeDistributionResponseDto?> ValidateAttributeDistributionAsync(
+        int id,
+        AttributeDistributionRequestDto request,
+        CancellationToken ct)
+    {
+        var character = await _repo.GetAsync(id, ct);
+        if (character?.RaceId is null)
+            return null;
+
+        var race = await _repo.GetRaceByIdAsync(character.RaceId.Value, ct);
+        if (race is null)
+            return null;
+
+        var desiredValues = new Dictionary<AttributeType, int>();
+        
+        if (request.AttAgi.HasValue) desiredValues[AttributeType.Agilidade] = request.AttAgi.Value;
+        if (request.AttAur.HasValue) desiredValues[AttributeType.Aura] = request.AttAur.Value;
+        if (request.AttCar.HasValue) desiredValues[AttributeType.Carisma] = request.AttCar.Value;
+        if (request.AttFis.HasValue) desiredValues[AttributeType.Fisico] = request.AttFis.Value;
+        if (request.AttFor.HasValue) desiredValues[AttributeType.Forca] = request.AttFor.Value;
+        if (request.AttInt.HasValue) desiredValues[AttributeType.Intelecto] = request.AttInt.Value;
+        if (request.AttPer.HasValue) desiredValues[AttributeType.Percepcao] = request.AttPer.Value;
+
+        var result = _attributeCalculation.CalculateDistributionCost(race, desiredValues);
+
+        return new AttributeDistributionResponseDto(
+            result.FinalValues.ToDictionary(x => x.Key.ToString(), x => x.Value),
+            result.PointsUsed.Select(x => (x.Type.ToString(), x.PointsUsed)).ToList(),
+            result.PointsGained.Select(x => (x.Type.ToString(), x.PointsGained)).ToList(),
+            result.TotalPointsNeeded,
+            result.TotalPointsGained,
+            result.NetCost,
+            result.IsValid,
+            result.Errors.Any() ? result.Errors : null
+        );
+    }
+
+    public async Task<(bool success, string message)> ApplyAttributeDistributionAsync(
+        int id,
+        AttributeDistributionRequestDto request,
+        CancellationToken ct)
+    {
+        var character = await _repo.GetAsync(id, ct);
+        if (character?.RaceId is null)
+            return (false, "Personagem não encontrado ou sem raça definida");
+
+        var race = await _repo.GetRaceByIdAsync(character.RaceId.Value, ct);
+        if (race is null)
+            return (false, "Raça não encontrada");
+
+        var desiredValues = new Dictionary<AttributeType, int>();
+        
+        if (request.AttAgi.HasValue) desiredValues[AttributeType.Agilidade] = request.AttAgi.Value;
+        if (request.AttAur.HasValue) desiredValues[AttributeType.Aura] = request.AttAur.Value;
+        if (request.AttCar.HasValue) desiredValues[AttributeType.Carisma] = request.AttCar.Value;
+        if (request.AttFis.HasValue) desiredValues[AttributeType.Fisico] = request.AttFis.Value;
+        if (request.AttFor.HasValue) desiredValues[AttributeType.Forca] = request.AttFor.Value;
+        if (request.AttInt.HasValue) desiredValues[AttributeType.Intelecto] = request.AttInt.Value;
+        if (request.AttPer.HasValue) desiredValues[AttributeType.Percepcao] = request.AttPer.Value;
+
+        var (isValid, message) = _attributeCalculation.ValidateAttributeDistribution(race, desiredValues);
+        if (!isValid)
+            return (false, message);
+
+        // Aplicar os atributos
+        character.AttAgi = desiredValues.TryGetValue(AttributeType.Agilidade, out var agi) ? agi : character.AttAgi;
+        character.AttAur = desiredValues.TryGetValue(AttributeType.Aura, out var aur) ? aur : character.AttAur;
+        character.AttCar = desiredValues.TryGetValue(AttributeType.Carisma, out var car) ? car : character.AttCar;
+        character.AttFis = desiredValues.TryGetValue(AttributeType.Fisico, out var fis) ? fis : character.AttFis;
+        character.AttFor = desiredValues.TryGetValue(AttributeType.Forca, out var for_) ? for_ : character.AttFor;
+        character.AttInt = desiredValues.TryGetValue(AttributeType.Intelecto, out var int_) ? int_ : character.AttInt;
+        character.AttPer = desiredValues.TryGetValue(AttributeType.Percepcao, out var per) ? per : character.AttPer;
+
+        await _repo.SaveChangesAsync(ct);
+        return (true, "Atributos aplicados com sucesso");
     }
 
     private static DerivedStatsDto Map(DerivedStats stats) => new()

@@ -52,6 +52,16 @@ public sealed class CharacterRepository : ICharacterRepository
         await _db.Characters.AddAsync(character, ct);
     }
 
+    public async Task<Race?> GetRaceByIdAsync(int raceId, CancellationToken ct)
+    {
+        return await _db.Races.FirstOrDefaultAsync(x => x.Id == raceId, ct);
+    }
+
+    public async Task<Profession?> GetProfessionByIdAsync(int professionId, CancellationToken ct)
+    {
+        return await _db.Professions.FirstOrDefaultAsync(x => x.Id == professionId, ct);
+    }
+
     public async Task<bool> DeleteAsync(int id, CancellationToken ct)
     {
         var entity = await _db.Characters.FirstOrDefaultAsync(x => x.Id == id, ct);

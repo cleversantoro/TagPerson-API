@@ -69,7 +69,6 @@ public class LookupsController : ControllerBase
     public async Task<IActionResult> Characterization() => 
         Ok(await _service.CharacterizationAsync(HttpContext.RequestAborted));
 
-
     /// <summary>Lista de Localidade.</summary>
     [HttpGet("place")]
     [ProducesResponseType(typeof(IReadOnlyList<PlaceLookupDto>), StatusCodes.Status200OK)]
@@ -93,5 +92,12 @@ public class LookupsController : ControllerBase
     [ProducesResponseType(typeof(IReadOnlyList<TimeLineLookupDto>), StatusCodes.Status200OK)]
     public async Task<IActionResult> TimeLine() =>
         Ok(await _service.TimeLineAsync(HttpContext.RequestAborted));
+
+    /// <summary>Lista de especializações.</summary>
+    [HttpGet("specialization")]
+    [ProducesResponseType(typeof(IReadOnlyList<SimpleLookupDto>), StatusCodes.Status200OK)]
+    public async Task<IActionResult> Specialization() =>
+        Ok(await _service.SpecializationAsync(HttpContext.RequestAborted));
+
 
 }

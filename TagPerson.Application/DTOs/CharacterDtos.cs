@@ -224,3 +224,24 @@ public sealed record CategoryDto(int Id, string Name, string? Icon);
 public sealed record StartingEquipmentDto(string Name);
 
 public sealed record SimpleLookupDto(int Id, string Name);
+
+public sealed record AttributeDistributionRequestDto(
+    int? AttAgi,
+    int? AttPer,
+    int? AttInt,
+    int? AttAur,
+    int? AttCar,
+    int? AttFor,
+    int? AttFis
+);
+
+public sealed record AttributeDistributionResponseDto(
+    Dictionary<string, int> FinalValues,
+    List<(string Type, int PointsUsed)> PointsUsed,
+    List<(string Type, decimal PointsGained)> PointsGained,
+    int TotalPointsNeeded,
+    decimal TotalPointsGained,
+    int NetCost,
+    bool IsValid,
+    List<string>? Errors
+);

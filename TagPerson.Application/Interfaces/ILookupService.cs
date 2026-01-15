@@ -12,8 +12,9 @@ public interface ILookupService
     Task<IReadOnlyList<EquipmentLookupDto>> EquipmentsAsync(CancellationToken ct);
     Task<IReadOnlyList<CategoryDto>> CategoriesAsync(CancellationToken ct);
     Task<IReadOnlyList<CharacterizationLookupDto>> CharacterizationAsync(CancellationToken ct);
-    Task<IReadOnlyList<PlaceLookupDto>> PlaceAsync(CancellationToken requestAborted);
-    Task<IReadOnlyList<ClassSocialLookupDto>> ClassSocialAsync(CancellationToken requestAborted);
-    Task<IReadOnlyList<DeityLookupDto>> DeityAsync(CancellationToken requestAborted);
-    Task<IReadOnlyList<TimeLineLookupDto>> TimeLineAsync(CancellationToken requestAborted);
+    Task<IReadOnlyList<PlaceLookupDto>> PlaceAsync(CancellationToken ct);
+    Task<IReadOnlyList<ClassSocialLookupDto>> ClassSocialAsync(CancellationToken ct);
+    Task<IReadOnlyList<DeityLookupDto>> DeityAsync(CancellationToken ct);
+    Task<IReadOnlyList<TimeLineLookupDto>> TimeLineAsync(CancellationToken ct);
+    Task<IReadOnlyList<SimpleLookupDto>> SpecializationAsync(CancellationToken ct);
 }

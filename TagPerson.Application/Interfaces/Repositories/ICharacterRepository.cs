@@ -10,6 +10,9 @@ public interface ICharacterRepository
     Task AddAsync(Character character, CancellationToken ct);
     Task<bool> DeleteAsync(int id, CancellationToken ct);
     
+    Task<Race?> GetRaceByIdAsync(int raceId, CancellationToken ct);
+    Task<Profession?> GetProfessionByIdAsync(int professionId, CancellationToken ct);
+    
     Task<bool> CharacterizationExistsAsync(int characterizationId, CancellationToken ct);
     Task AddCharacterizationAsync(CharacterCharacterization characterization, CancellationToken ct);
     Task<CharacterCharacterization?> GetCharacterizationAsync(int characterId, int characterizationId, CancellationToken ct);

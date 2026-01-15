@@ -58,4 +58,7 @@ public sealed class LookupRepository : ILookupRepository
         .OrderBy(x => x.Year)
         .ToListAsync(ct);
 
+    public async Task<IReadOnlyList<Specialization>> SpecializationAsync(CancellationToken ct) =>
+        await _db.Specializations.AsNoTracking().OrderBy(x => x.Name).ToListAsync(ct);
+
 }

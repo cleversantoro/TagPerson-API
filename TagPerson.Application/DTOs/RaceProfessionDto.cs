@@ -31,6 +31,8 @@ public sealed record ProfessionDto(
     string? Description,
     string? StartingEquipment,
     int? CoinsCopper,
+    int? CoinsSilver,
+    int? CoinsGold,
     int? HeroicEnergy,
     int? SkillPoints,
     int? WeaponPoints,
@@ -40,6 +42,7 @@ public sealed record ProfessionDto(
     int? AttributeForMagic,
     int? SpellGroup,
     string? BasicDefense,
+    int? WeaponDamageMaximun,
     string? Absorption
 );
 

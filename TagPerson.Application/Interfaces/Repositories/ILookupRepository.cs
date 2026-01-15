@@ -17,4 +17,5 @@ public interface ILookupRepository
     Task<IReadOnlyList<ClassSocial>> ClassSocialAsync(CancellationToken ct);
     Task<IReadOnlyList<Deity>> DeityAsync(CancellationToken ct);
     Task<IReadOnlyList<TimeLine>> TimeLineAsync(CancellationToken ct);
+    Task<IReadOnlyList<Specialization>> SpecializationAsync(CancellationToken ct);
 }

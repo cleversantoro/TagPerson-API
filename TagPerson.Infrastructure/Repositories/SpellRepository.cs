@@ -55,4 +55,9 @@ public sealed class SpellRepository : ISpellRepository
             ))
             .ToListAsync(ct);
     }
+
+    public async Task<Spell?> GetByIdAsync(int spellId, CancellationToken ct)
+    {
+        return await _db.Spells.FirstOrDefaultAsync(x => x.Id == spellId, ct);
+    }
 }
