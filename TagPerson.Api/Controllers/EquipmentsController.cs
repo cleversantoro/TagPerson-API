@@ -37,4 +37,59 @@ public class EquipmentsController : ControllerBase
         var list = await _service.GetItemsByGroupAsync(groupId, HttpContext.RequestAborted);
         return Ok(list);
     }
+
+    /// <summary>Lista equipamentos Diversos.</summary>
+    [HttpGet("belongings")]
+    [ProducesResponseType(typeof(IReadOnlyList<EquipmentBelongingsDto>), StatusCodes.Status200OK)]
+    public async Task<IActionResult> GetBelongings()
+    {
+        var list = await _service.GetBelongingsAsync(HttpContext.RequestAborted);
+        return Ok(list);
+    }
+
+    /// <summary>Lista equipamentos armas.</summary>
+    [HttpGet("weapons")]
+    [ProducesResponseType(typeof(IReadOnlyList<EquipmentWeaponsDto>), StatusCodes.Status200OK)]
+    public async Task<IActionResult> GetWeapons()
+    {
+        var list = await _service.GetWeaponsAsync(HttpContext.RequestAborted);
+        return Ok(list);
+    }
+
+    /// <summary>Lista equipamentos defesa.</summary>
+    [HttpGet("defense")]
+    [ProducesResponseType(typeof(IReadOnlyList<EquipmentDefenseDto>), StatusCodes.Status200OK)]
+    public async Task<IActionResult> GetDefense()
+    {
+        var list = await _service.GetDefenseAsync(HttpContext.RequestAborted);
+        return Ok(list);
+    }
+
+    /// <summary>Lista equipamentos armaduras.</summary>
+    [HttpGet("armors")]
+    [ProducesResponseType(typeof(IReadOnlyList<EquipmentDefenseDto>), StatusCodes.Status200OK)]
+    public async Task<IActionResult> GetArmors()
+    {
+        var list = await _service.GetArmorsAsync(HttpContext.RequestAborted);
+        return Ok(list);
+    }
+
+    /// <summary>Lista equipamentos escudos.</summary>
+    [HttpGet("shields")]
+    [ProducesResponseType(typeof(IReadOnlyList<EquipmentDefenseDto>), StatusCodes.Status200OK)]
+    public async Task<IActionResult> GetShields()
+    {
+        var list = await _service.GetShieldsAsync(HttpContext.RequestAborted);
+        return Ok(list);
+    }
+
+    /// <summary>Lista equipamentos elmos.</summary>
+    [HttpGet("helmets")]
+    [ProducesResponseType(typeof(IReadOnlyList<EquipmentDefenseDto>), StatusCodes.Status200OK)]
+    public async Task<IActionResult> GetHelmets()
+    {
+        var list = await _service.GetHelmetsAsync(HttpContext.RequestAborted);
+        return Ok(list);
+    }
+
 }

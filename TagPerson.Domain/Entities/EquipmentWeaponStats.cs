@@ -14,7 +14,7 @@ public class EquipmentWeaponStats
     [Column("custo")] public int? Cost { get; set; }
     [Column("alcance")] [MaxLength(50)] public string? Range { get; set; }
     [Column("forca_minima")] public int? MinStrength { get; set; }
-    [Column("bonus")] public int? Bonus { get; set; }
+    [Column("bonus")] public string? Bonus { get; set; }
     [Column("l")] public int? L { get; set; }
     [Column("m")] public int? M { get; set; }
     [Column("p")] public int? P { get; set; }
