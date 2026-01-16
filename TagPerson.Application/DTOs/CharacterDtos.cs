@@ -18,7 +18,7 @@ public sealed record CharacterSheetDto(
     SimpleLookupDto? BirthPlace,
     SimpleLookupDto? Race,
     SimpleLookupDto? Profession,
-    SimpleLookupDto? Specialization,
+    SpecializationDto? Specialization,
     SimpleLookupDto? Deity,
     CharacterAttributesDto Attributes,
     CharacterPointsDto Points,
@@ -116,6 +116,11 @@ public sealed record CharacterEquipmentRequestDto(
     int? Qty
 );
 
+public sealed record CharacterSpellRequestDto(
+    int SpellId,
+    int? Level
+);
+
 public sealed record CharacterSkillRequestDto(
     int SkillId,
     int? Level
@@ -142,6 +147,16 @@ public sealed record UpdateCharacterRequestDto(
     int? Level,
     int? RaceId,
     int? ProfessionId,
+
+    string? Eyes,
+    string? Hair,
+    string? Skin,
+    int? Age,
+    int? Weight,
+    int? Height,
+    string? Appearance,
+    string? History,
+
     int? AttAgi,
     int? AttPer,
     int? AttInt,
@@ -149,9 +164,11 @@ public sealed record UpdateCharacterRequestDto(
     int? AttCar,
     int? AttFor,
     int? AttFis,
+
     int? CoinsCopper,
     int? CoinsSilver,
     int? CoinsGold,
+
     int? PointsSkill,
     int? PointsWeapon,
     int? PointsCombat,
@@ -221,7 +238,9 @@ public sealed record CategoryDto(int Id, string Name, string? Icon);
 
 #endregion
 
-public sealed record StartingEquipmentDto(string Name);
+public sealed record SpecializationDto(int Id, int? ProfessionId, int? SpellGroupId, int? CombatGroupI, string Name);
+
+public sealed record StartingEquipmentDto(int EquipmentId, string Name);
 
 public sealed record SimpleLookupDto(int Id, string Name);
 

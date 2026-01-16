@@ -1,3 +1,4 @@
+using System.Text.Json;
 using TagPerson.Application.Interfaces;
 using TagPerson.Application.Interfaces.Repositories;
 using TagPerson.Domain.Entities;
@@ -71,6 +72,9 @@ public sealed class CharacterInitializationService : ICharacterInitializationSer
         character.CoinsGold = profession.CoinsGold ?? 0;
 
         character.ClassSocialId = 7;
+
+        // Adicionar equipamentos iniciais da profissão
+        await AddProfessionStartingEquipmentsAsync(character, profession, ct);
 
         // Adicionar habilidades da profissão
         //await AddProfessionSkillsAsync(character, profession, ct);
@@ -272,4 +276,66 @@ public sealed class CharacterInitializationService : ICharacterInitializationSer
             _ => new List<int>()
         };
     }
+
+    /// <summary>
+    /// Adiciona os equipamentos iniciais da profissão ao personagem.
+    /// </summary>
+    private async Task AddProfessionStartingEquipmentsAsync(Character character, Profession profession, CancellationToken ct)
+    {
+        if (string.IsNullOrWhiteSpace(profession.StartingEquipment))
+        {
+            return;
+        }
+
+        try
+        {
+            var options = new JsonSerializerOptions { PropertyNameCaseInsensitive = true };
+            var equipmentItems = JsonSerializer.Deserialize<List<StartingEquipmentItem>>(
+                profession.StartingEquipment, 
+                options);
+
+            if (equipmentItems is null || equipmentItems.Count == 0)
+            {
+                return;
+            }
+
+            foreach (var item in equipmentItems)
+            {
+                // Verificar se o equipamento existe
+                var equipmentExists = await _characterRepository.EquipmentExistsAsync(item.EquipmentId, ct);
+                if (!equipmentExists)
+                {
+                    continue;
+                }
+
+                // Verificar se o personagem já possui este equipamento
+                var existingEquipment = character.Equipments.FirstOrDefault(e => e.EquipmentId == item.EquipmentId);
+                if (existingEquipment is not null)
+                {
+                    // Se já existe, incrementar a quantidade
+                    existingEquipment.Qty = (existingEquipment.Qty ?? 0) + 1;
+                }
+                else
+                {
+                    // Adicionar novo equipamento
+                    character.Equipments.Add(new CharacterEquipment
+                    {
+                        CharacterId = character.Id,
+                        EquipmentId = item.EquipmentId,
+                        Qty = 1
+                    });
+                }
+            }
+        }
+        catch
+        {
+            // Se houver erro na desserialização, continua sem adicionar os equipamentos
+        }
+    }
+
+    /// <summary>
+    /// Record auxiliar para desserializar os equipamentos iniciais do JSON da profissão.
+    /// </summary>
+    private sealed record StartingEquipmentItem(int EquipmentId, string Name);
 }
+

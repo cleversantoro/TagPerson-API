@@ -114,6 +114,17 @@ public class CharactersController : ControllerBase
         return NoContent();
     }
 
+    /// <summary>Adiciona magia ao personagem.</summary>
+    [HttpPost("{id:int}/spells")]
+    [ProducesResponseType(StatusCodes.Status204NoContent)]
+    [ProducesResponseType(StatusCodes.Status400BadRequest)]
+    [ProducesResponseType(StatusCodes.Status404NotFound)]
+    public async Task<IActionResult> AddSpell(int id, [FromBody] CharacterSpellRequestDto req)
+    {
+        var ok = await _service.AddSpellAsync(id, req, HttpContext.RequestAborted);
+        return ok ? NoContent() : NotFound();
+    }
+
     /// <summary>Adiciona caracterização ao personagem.</summary>
     [HttpPost("{id:int}/characterizations")]
     [ProducesResponseType(StatusCodes.Status204NoContent)]

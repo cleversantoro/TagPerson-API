@@ -17,4 +17,5 @@ public interface ICharacterService
     Task<bool> DeleteAsync(int id, CancellationToken ct);
     Task<AttributeDistributionResponseDto?> ValidateAttributeDistributionAsync(int id, AttributeDistributionRequestDto request, CancellationToken ct);
     Task<(bool success, string message)> ApplyAttributeDistributionAsync(int id, AttributeDistributionRequestDto request, CancellationToken ct);
+    Task<bool> AddSpellAsync(int id, CharacterSpellRequestDto req, CancellationToken requestAborted);
 }

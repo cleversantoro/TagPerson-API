@@ -13,6 +13,6 @@ public class Specialization
     [Column("id_profissao")] public int? ProfessionId { get; set; }
     public Profession? Profession { get; set; }
 
-    [Column("id_magia_grupo")] public int? SpellGroup { get; set; }
-    [Column("id_combate_grupo")] public int? CombatGroup { get; set; }
+    [Column("id_magia_grupo")] public int? SpellGroupId { get; set; }
+    [Column("id_combate_grupo")] public int? CombatGroupId { get; set; }
 }

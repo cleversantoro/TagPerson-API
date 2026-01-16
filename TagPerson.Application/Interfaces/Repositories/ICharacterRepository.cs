@@ -30,4 +30,8 @@ public interface ICharacterRepository
     Task<CharacterEquipment?> GetEquipmentAsync(int characterId, int equipmentId, CancellationToken ct);
     Task AddEquipmentAsync(CharacterEquipment equipment, CancellationToken ct);
     Task SaveChangesAsync(CancellationToken ct);
+    
+    Task<bool> SpellExistsAsync(int spellId, CancellationToken ct);
+    Task<CharacterSpell?> GetSpellAsync(int characterId, int spellId, CancellationToken ct);
+    Task AddSPellAsync(CharacterSpell characterSpell, CancellationToken ct);
 }

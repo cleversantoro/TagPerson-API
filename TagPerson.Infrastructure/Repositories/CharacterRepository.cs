@@ -150,4 +150,19 @@ public sealed class CharacterRepository : ICharacterRepository
 
     public Task SaveChangesAsync(CancellationToken ct) => _db.SaveChangesAsync(ct);
 
+    public async Task<bool> SpellExistsAsync(int spellId, CancellationToken ct)
+    {
+        return await _db.Spells.AnyAsync(x => x.Id == spellId, ct);
+    }
+
+    public async Task<CharacterSpell?> GetSpellAsync(int characterId, int spellId, CancellationToken ct)
+    {
+        return await _db.CharacterSpells
+           .FirstOrDefaultAsync(x => x.CharacterId == characterId && x.SpellId == spellId, ct);
+    }
+
+    public async Task AddSPellAsync(CharacterSpell characterSpell, CancellationToken ct)
+    {
+        await _db.CharacterSpells.AddAsync(characterSpell, ct); 
+    }
 }

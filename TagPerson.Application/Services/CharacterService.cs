@@ -1,3 +1,4 @@
+using System.Text.Json;
 using TagPerson.Application.DTOs;
 using TagPerson.Application.Interfaces;
 using TagPerson.Application.Interfaces.Repositories;
@@ -31,9 +32,9 @@ public sealed class CharacterService : ICharacterService
         var items = await _repo.ListAsync(ct);
         return items
             .Select(c => new CharacterListItemDto(
-                c.Id, 
-                c.Name, 
-                c.Level, 
+                c.Id,
+                c.Name,
+                c.Level,
                 c.Race is null ? null : new SimpleLookupDto(c.Race.Id, c.Race.Name),
                 c.Profession is null ? null : new SimpleLookupDto(c.Profession.Id, c.Profession.Name)
             )
@@ -61,7 +62,13 @@ public sealed class CharacterService : ICharacterService
             c.BirthPlace is null ? null : new SimpleLookupDto(c.BirthPlace.Id, c.BirthPlace.Name),
             c.Race is null ? null : new SimpleLookupDto(c.Race.Id, c.Race.Name),
             c.Profession is null ? null : new SimpleLookupDto(c.Profession.Id, c.Profession.Name),
-            c.Specialization is null ? null : new SimpleLookupDto(c.Specialization.Id, c.Specialization.Name),
+            c.Specialization is null ? null : new SpecializationDto(
+                c.Specialization.Id,
+                c.Specialization.ProfessionId,
+                c.Specialization.SpellGroupId,
+                c.Specialization.CombatGroupId,
+                c.Specialization.Name
+            ),
             c.Deity is null ? null : new SimpleLookupDto(c.Deity.Id, c.Deity.Name),
             new CharacterAttributesDto(
                 c.AttAgi,
@@ -178,6 +185,15 @@ public sealed class CharacterService : ICharacterService
         c.RaceId = request.RaceId;
         c.ProfessionId = request.ProfessionId;
 
+        c.Age = request.Age;
+        c.Height = request.Height;
+        c.Weight = request.Weight;
+        c.Eyes = request.Eyes;
+        c.Hair = request.Hair;
+        c.Skin = request.Skin;
+        c.Appearance = request.Appearance;
+        c.History = request.History;
+
         c.AttAgi = request.AttAgi;
         c.AttPer = request.AttPer;
         c.AttInt = request.AttInt;
@@ -247,6 +263,33 @@ public sealed class CharacterService : ICharacterService
         else if (request.Level.HasValue)
         {
             current.Level = request.Level;
+        }
+
+        await _repo.SaveChangesAsync(ct);
+        return true;
+    }
+
+    public async Task<bool> AddSpellAsync(int id, CharacterSpellRequestDto req, CancellationToken ct)
+    {
+        var c = await _repo.GetAsync(id, ct);
+        if (c is null) return false;
+
+        var spellExists = await _repo.SpellExistsAsync(req.SpellId, ct);
+        if (!spellExists) return false;
+
+        var current = await _repo.GetSpellAsync(id, req.SpellId, ct);
+        if (current is null)
+        {
+            await _repo.AddSPellAsync(new CharacterSpell
+            {
+                CharacterId = id,
+                SpellId = req.SpellId,
+                Level = req.Level ?? 0
+            }, ct);
+        }
+        else if (req.Level.HasValue)
+        {
+            current.Level = req.Level;
         }
 
         await _repo.SaveChangesAsync(ct);
@@ -363,7 +406,7 @@ public sealed class CharacterService : ICharacterService
             return null;
 
         var desiredValues = new Dictionary<AttributeType, int>();
-        
+
         if (request.AttAgi.HasValue) desiredValues[AttributeType.Agilidade] = request.AttAgi.Value;
         if (request.AttAur.HasValue) desiredValues[AttributeType.Aura] = request.AttAur.Value;
         if (request.AttCar.HasValue) desiredValues[AttributeType.Carisma] = request.AttCar.Value;
@@ -400,7 +443,7 @@ public sealed class CharacterService : ICharacterService
             return (false, "Raça não encontrada");
 
         var desiredValues = new Dictionary<AttributeType, int>();
-        
+
         if (request.AttAgi.HasValue) desiredValues[AttributeType.Agilidade] = request.AttAgi.Value;
         if (request.AttAur.HasValue) desiredValues[AttributeType.Aura] = request.AttAur.Value;
         if (request.AttCar.HasValue) desiredValues[AttributeType.Carisma] = request.AttCar.Value;
@@ -441,22 +484,29 @@ public sealed class CharacterService : ICharacterService
 
     private static IReadOnlyList<StartingEquipmentDto> ParseStartingEquipments(string? startingEquipment)
     {
-        if (string.IsNullOrWhiteSpace(startingEquipment)) return Array.Empty<StartingEquipmentDto>();
+        if (string.IsNullOrWhiteSpace(startingEquipment))
+            return Array.Empty<StartingEquipmentDto>();
 
-        var equipments = startingEquipment.Split('|');
-        var result = new List<StartingEquipmentDto>();
-
-        foreach (var equipment in equipments)
+        try
         {
-            var trimmed = equipment.Trim();
-            if (!string.IsNullOrWhiteSpace(trimmed))
-            {
-                result.Add(new StartingEquipmentDto(trimmed));
-            }
-        }
+            var options = new JsonSerializerOptions { PropertyNameCaseInsensitive = true };
+            var equipments = JsonSerializer.Deserialize<List<EquipmentItem>>(startingEquipment, options);
 
-        return result;
+            if (equipments is null || equipments.Count == 0)
+                return Array.Empty<StartingEquipmentDto>();
+
+            return equipments
+                .Select(e => new StartingEquipmentDto(e.EquipmentId, e.Name))
+                .ToList();
+        }
+        catch
+        {
+            return Array.Empty<StartingEquipmentDto>();
+        }
     }
+
+    private sealed record EquipmentItem(int EquipmentId, string Name);
+
 }
 
 
