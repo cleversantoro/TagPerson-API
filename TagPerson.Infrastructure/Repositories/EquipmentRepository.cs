@@ -15,7 +15,6 @@ public sealed class EquipmentRepository : IEquipmentRepository
         _db = db;
     }
 
-    public async Task<IReadOnlyList<EquipmentGroup>> GetGroupsAsync(CancellationToken ct)
     {
         return await _db.EquipmentGroups
             .AsNoTracking()
