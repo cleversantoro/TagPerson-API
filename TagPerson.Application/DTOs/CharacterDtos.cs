@@ -99,6 +99,7 @@ public sealed record CharacterCombatSkillDto(
     int CombatSkillId,
     string Name,
     int? Level,
+    int? Group,
     string? AttributeCode
 );
 
@@ -128,6 +129,7 @@ public sealed record CharacterSkillRequestDto(
 
 public sealed record CharacterCombatSkillRequestDto(
     int CombatSkillId,
+    int? Group,
     int? Level
 );
 

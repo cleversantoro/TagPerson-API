@@ -117,6 +117,7 @@ public sealed class CharacterService : ICharacterService
                 s.CombatSkillId,
                 s.CombatSkill.Name,
                 s.Level,
+                s.Group,
                 s.CombatSkill.AttributeCode
             )).ToList(),
             c.Equipments.Select(e => new CharacterEquipmentDto(
@@ -311,6 +312,7 @@ public sealed class CharacterService : ICharacterService
             {
                 CharacterId = id,
                 CombatSkillId = request.CombatSkillId,
+                Group = request.Group ?? 0,
                 Level = request.Level ?? 0
             }, ct);
         }

@@ -189,6 +189,7 @@ public sealed class CharacterInitializationService : ICharacterInitializationSer
                 {
                     CharacterId = character.Id,
                     CombatSkillId = combatSkillId,
+                    Group = 1,
                     Level = 1
                 });
             }
