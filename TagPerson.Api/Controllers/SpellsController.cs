@@ -46,4 +46,22 @@ public class SpellsController : ControllerBase
         var list = await _service.GetSpellsFromGroupAsync(groupId, HttpContext.RequestAborted);
         return Ok(list);
     }
+
+    /// <summary>Lista magias por profissão.</summary>
+    [HttpGet("views/{professionalId:int}/spell_profession")]
+    [ProducesResponseType(typeof(IReadOnlyList<SpellTechniquesDto>), StatusCodes.Status200OK)]
+    public async Task<IActionResult> GetProfessions(int professionalId)
+    {
+        var list = await _service.GetProfessionsAsync(professionalId, HttpContext.RequestAborted);
+        return Ok(list);
+    }
+
+    /// <summary>Lista magias por especialização.</summary>
+    [HttpGet("views/{especializationId:int}/spell_especialization")]
+    [ProducesResponseType(typeof(IReadOnlyList<SpellTechniquesDto>), StatusCodes.Status200OK)]
+    public async Task<IActionResult> GetEspecializations(int especializationId)
+    {
+        var list = await _service.GetEspecializationsAsync(especializationId, HttpContext.RequestAborted);
+        return Ok(list);
+    }
 }

@@ -60,4 +60,20 @@ public sealed class SpellRepository : ISpellRepository
     {
         return await _db.Spells.FirstOrDefaultAsync(x => x.Id == spellId, ct);
     }
+
+    public async Task<IReadOnlyList<SpellProfession>> GetProfessionsAsync(int professionalId, CancellationToken ct)
+    {
+        return await _db.SpellProfessions
+            .AsNoTracking()
+            .Where(x => x.ProfEspId == professionalId)
+            .ToListAsync(ct);
+    }
+
+    public async Task<IReadOnlyList<SpellEspecialization>> GetEspecializationsAsync(int especializationId, CancellationToken ct)
+    {
+        return await _db.SpellEspecializations
+            .AsNoTracking()
+            .Where(x => x.ProfEspId == especializationId)
+            .ToListAsync(ct);
+    }
 }

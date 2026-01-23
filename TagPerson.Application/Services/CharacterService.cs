@@ -122,8 +122,16 @@ public sealed class CharacterService : ICharacterService
             )).ToList(),
             c.Equipments.Select(e => new CharacterEquipmentDto(
                 e.EquipmentId,
+                e.Equipment.GroupId,
                 e.Equipment.Name,
-                e.Qty
+                e.Equipment.Description,
+                e.Equipment.Price,
+                e.Qty,
+                e.Equipment.IsWeapon,
+                e.Equipment.IsDefense,
+                e.Equipment.IsArmor,    
+                e.Equipment.IsShield,
+                e.Equipment.IsHelmet
             )).ToList(),
             c.Characterizations.Select(ch => new CharacterCharacterizationDto(
                 ch.CharacterizationId,

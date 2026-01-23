@@ -64,4 +64,27 @@ public sealed class CombatRepository : ICombatRepository, ICombatSkillRepository
     {
         return await _db.CombatSkills.FirstOrDefaultAsync(x => x.Id == combatSkillId, ct);
     }
+
+    public async Task<IReadOnlyList<CombatTechniquesBasics>> GetBasicsAsync(CancellationToken ct)
+    {
+        return await _db.CombatTechniquesBasics
+            .AsNoTracking()
+            .ToListAsync(ct);
+    }
+
+    public async Task<IReadOnlyList<CombatTechniquesProfession>> GetProfessionsAsync(int professionalId, CancellationToken ct)
+    {
+        return await _db.CombatTechniquesProfessions
+            .AsNoTracking()
+            .Where(x => x.ProfEspId == professionalId)
+            .ToListAsync(ct);
+    }
+
+    public async Task<IReadOnlyList<CombatTechniquesEspecialization>> GetEspecializationsAsync(int especializationId, CancellationToken ct)
+    {
+        return await _db.CombatTechniquesEspecializations
+            .AsNoTracking()
+            .Where(x => x.ProfEspId == especializationId)
+            .ToListAsync(ct);
+    }
 }

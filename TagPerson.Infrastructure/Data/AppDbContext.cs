@@ -39,12 +39,17 @@ public class AppDbContext : DbContext
     public DbSet<CombatGroup> CombatGroups => Set<CombatGroup>();
     public DbSet<CombatGroupCost> CombatGroupCosts => Set<CombatGroupCost>();
     public DbSet<CombatSkill> CombatSkills => Set<CombatSkill>();
+    public DbSet<CombatTechniquesBasics> CombatTechniquesBasics => Set<CombatTechniquesBasics>();
+    public DbSet<CombatTechniquesEspecialization> CombatTechniquesEspecializations => Set<CombatTechniquesEspecialization>();
+    public DbSet<CombatTechniquesProfession> CombatTechniquesProfessions => Set<CombatTechniquesProfession>();
     #endregion
 
     #region Magia
     public DbSet<Spell> Spells => Set<Spell>();
     public DbSet<SpellGroup> SpellGroups => Set<SpellGroup>();
     public DbSet<SpellGroupCost> SpellGroupCosts => Set<SpellGroupCost>();
+    public DbSet<SpellEspecialization> SpellEspecializations => Set<SpellEspecialization>();
+    public DbSet<SpellProfession> SpellProfessions => Set<SpellProfession>();
     #endregion
 
     #region Equipamentos
@@ -80,6 +85,13 @@ public class AppDbContext : DbContext
         modelBuilder.Entity<CombatGroupCost>().HasKey(x => new { x.CombatSkillId, x.CombatGroupId });
         modelBuilder.Entity<SpellGroupCost>().HasKey(x => new { x.SpellId, x.SpellGroupId });
 
+        modelBuilder.Entity<CombatTechniquesBasics>(x =>{x.ToView("vw_tecnicas_basicas");x.HasNoKey();});
+        modelBuilder.Entity<CombatTechniquesEspecialization>(x => { x.ToView("vw_tecnicas_especializacao"); x.HasNoKey(); });
+        modelBuilder.Entity<CombatTechniquesProfession>(x => { x.ToView("vw_tecnicas_profissao"); x.HasNoKey(); });
+
+        modelBuilder.Entity<SpellEspecialization>(x => { x.ToView("vw_magia_especializacao"); x.HasNoKey(); });
+        modelBuilder.Entity<SpellProfession>(x => { x.ToView("vw_magia_profissao"); x.HasNoKey(); });
+
         modelBuilder.Entity<EquipmentWeaponStats>()
             .HasOne(x => x.Equipment).WithOne(x => x.WeaponStats).HasForeignKey<EquipmentWeaponStats>(x => x.EquipmentId);
 
@@ -109,3 +121,5 @@ public class AppDbContext : DbContext
             .IsUnique();
     }
 }
+
+

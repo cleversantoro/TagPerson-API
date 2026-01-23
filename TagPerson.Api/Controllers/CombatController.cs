@@ -46,4 +46,32 @@ public class CombatController : ControllerBase
         var list = await _service.GetCombatFromGroupAsync(groupId, HttpContext.RequestAborted);
         return Ok(list);
     }
+
+    /// <summary>Lista tecnicas Basicas.</summary>
+    [HttpGet("views/combat_basic")]
+    [ProducesResponseType(typeof(IReadOnlyList<CombatTechniquesDto>), StatusCodes.Status200OK)]
+    public async Task<IActionResult> GetBasics()
+    {
+        var list = await _service.GetBasicsAsync(HttpContext.RequestAborted);
+        return Ok(list);
+    }
+
+    /// <summary>Lista tecnicas da Profissão.</summary>
+    [HttpGet("views/{professionalId:int}/combat_profession")]
+    [ProducesResponseType(typeof(IReadOnlyList<CombatTechniquesDto>), StatusCodes.Status200OK)]
+    public async Task<IActionResult> GetProfessions(int professionalId)
+    {
+        var list = await _service.GetProfessionsAsync(professionalId, HttpContext.RequestAborted);
+        return Ok(list);
+    }
+
+    /// <summary>Lista tecnicas da especialização.</summary>
+    [HttpGet("views/{especializationId:int}/combat_especialization")]
+    [ProducesResponseType(typeof(IReadOnlyList<CombatTechniquesDto>), StatusCodes.Status200OK)]
+    public async Task<IActionResult> GetEspecializations(int especializationId)
+    {
+        var list = await _service.GetEspecializationsAsync(especializationId, HttpContext.RequestAborted);
+        return Ok(list);
+    }
+
 }

@@ -1,3 +1,5 @@
+using System;
+using System.ComponentModel.DataAnnotations.Schema;
 using TagPerson.Domain.Entities;
 
 namespace TagPerson.Application.DTOs;
@@ -103,7 +105,19 @@ public sealed record CharacterCombatSkillDto(
     string? AttributeCode
 );
 
-public sealed record CharacterEquipmentDto(int EquipmentId, string Name, int? Qty);
+public sealed record CharacterEquipmentDto(
+    int EquipmentId,
+    int? Groupid,
+    string Name,
+    string? Description,
+    int? Price,
+    int? Qty,
+    int? IsWeapon,
+    int? IsDefense,
+    int? IsArmor,
+    int? IsShield,
+    int? IsHelmet
+);
 
 public sealed record CharacterCharacterizationDto(int CharacterizationId, string Name, int? Level);
 
@@ -212,10 +226,44 @@ public sealed record SpellFromGroupDto(
     string? Effects
 );
 
+public sealed record SpellTechniquesDto(
+    int? SpellId,
+    int? ProfEspId,
+    string? SpellName,
+    int? SpellGroupId,
+    string? GroupName,
+    string? Description,
+    string? Evocation,
+    string? Range,
+    string? Duration,
+    string? Levels,
+    int? Cost
+);
+
+
 #endregion
 
 #region Combate
 public sealed record CombatGroupDto(int Id, string Name, int? ParentId);
+
+public sealed record CombatTechniquesDto(
+    int? CombatId,
+    int? ProfEspId,
+    string? CombatName,
+    string? AttributeCode,
+    string? Effect,
+    string? Notes,
+    string? Requisite,
+    string? RollTable,
+    string? Improvement,
+    int? CombatGroupId,
+    string? GroupName,
+    int? CategoryId,
+    string? CategoryName,
+    int? Cost,
+    int? Bonus,
+    int? Reduction
+);
 
 public sealed record CombatFromGroupDto(
     int Id,
