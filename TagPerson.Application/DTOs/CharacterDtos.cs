@@ -223,20 +223,22 @@ public sealed record SpellFromGroupDto(
     string? Range,
     string? Duration,
     string? Description,
-    string? Effects
+    string? Effects,
+    int? isProfession,
+    int? isEspecialization 
 );
 
 public sealed record SpellTechniquesDto(
-    int? SpellId,
+    int? Id,
     int? ProfEspId,
-    string? SpellName,
+    string? Name,
     int? SpellGroupId,
     string? GroupName,
     string? Description,
     string? Evocation,
     string? Range,
     string? Duration,
-    string? Levels,
+    string? Effects,
     int? Cost
 );
 

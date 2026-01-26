@@ -33,6 +33,10 @@ public sealed class SpellRepository : ISpellRepository
                 cost => cost.SpellId,
                 spell => spell.Id,
                 (cost, spell) => new { cost, spell })
+            .Join(_db.SpellGroups.AsNoTracking(),
+                prev => prev.cost.SpellGroupId,
+                group => group.Id,
+                (prev, group) => new { prev.cost, prev.spell, group })
             .OrderBy(x => x.spell.Name)
             .Select(x => new SpellFromGroupDto(
                 x.spell.Id,
@@ -42,7 +46,9 @@ public sealed class SpellRepository : ISpellRepository
                 x.spell.Range,
                 x.spell.Duration,
                 x.spell.Description,
-                x.spell.LevelsJson
+                x.spell.LevelsJson,
+                x.group.IsProfession,
+                x.group.IsEspecialization                
             ))
             .ToListAsync(ct);
     }
