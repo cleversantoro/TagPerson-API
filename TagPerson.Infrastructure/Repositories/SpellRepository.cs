@@ -19,17 +19,8 @@ public sealed class SpellRepository : ISpellRepository
     {
         return await _db.SpellGroups
             .AsNoTracking()
-            .Where(x => x.ParentId == null || x.ParentId == -1)
-            .OrderBy(x => x.Name)
-            .ToListAsync(ct);
-    }
-
-    public async Task<IReadOnlyList<SpellGroup>> GetGroupChildrenAsync(int parentId, CancellationToken ct)
-    {
-        return await _db.SpellGroups
-            .AsNoTracking()
-            .Where(x => x.ParentId == parentId)
-            .OrderBy(x => x.Name)
+            //.Where(x => x.ParentId == null || x.ParentId == -1)
+            .OrderBy(x => x.Id)
             .ToListAsync(ct);
     }
 

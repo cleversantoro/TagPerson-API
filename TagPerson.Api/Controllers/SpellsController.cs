@@ -20,7 +20,7 @@ public class SpellsController : ControllerBase
         _service = service;
     }
 
-    /// <summary>Lista grupos pais.</summary>
+    /// <summary>Lista os grupos de magia.</summary>
     [HttpGet("groups")]
     [ProducesResponseType(typeof(IReadOnlyList<SpellGroupDto>), StatusCodes.Status200OK)]
     public async Task<IActionResult> GroupParents()
@@ -29,17 +29,8 @@ public class SpellsController : ControllerBase
         return Ok(list);
     }
 
-    /// <summary>Lista grupos filhos de um pai.</summary>
-    [HttpGet("groups/{parentId:int}/children")]
-    [ProducesResponseType(typeof(IReadOnlyList<SpellGroupDto>), StatusCodes.Status200OK)]
-    public async Task<IActionResult> GroupChildren(int parentId)
-    {
-        var list = await _service.GetGroupChildrenAsync(parentId, HttpContext.RequestAborted);
-        return Ok(list);
-    }
-
     /// <summary>Lista magias por grupo.</summary>
-    [HttpGet("groups/{groupId:int}/spells")]
+    [HttpGet("groups/{groupId:int}/spell_items")]
     [ProducesResponseType(typeof(IReadOnlyList<SpellFromGroupDto>), StatusCodes.Status200OK)]
     public async Task<IActionResult> SpellsFromGroup(int groupId)
     {

@@ -23,15 +23,6 @@ public sealed class CombatRepository : ICombatRepository, ICombatSkillRepository
             .ToListAsync(ct);
     }
 
-    public async Task<IReadOnlyList<CombatGroup>> GetGroupChildrenAsync(int parentId, CancellationToken ct)
-    {
-        return await _db.CombatGroups
-            .AsNoTracking()
-            .Where(x => x.ParentId == parentId)
-            .OrderBy(x => x.Name)
-            .ToListAsync(ct);
-    }
-
     public async Task<IReadOnlyList<CombatFromGroupDto>> GetCombatFromGroupAsync(int groupId, CancellationToken ct)
     {
         return await _db.CombatGroupCosts

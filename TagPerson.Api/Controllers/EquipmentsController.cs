@@ -30,7 +30,7 @@ public class EquipmentsController : ControllerBase
     }
 
     /// <summary>Lista equipamentos por grupo.</summary>
-    [HttpGet("groups/{groupId:int}/items")]
+    [HttpGet("groups/{groupId:int}/equipment_items")]
     [ProducesResponseType(typeof(IReadOnlyList<EquipmentFromGroupDto>), StatusCodes.Status200OK)]
     public async Task<IActionResult> ItemsByGroup(int groupId)
     {
@@ -38,7 +38,7 @@ public class EquipmentsController : ControllerBase
         return Ok(list);
     }
 
-    /// <summary>Lista equipamentos Diversos.</summary>
+    /// <summary>Lista equipamentos diversos.</summary>
     [HttpGet("belongings")]
     [ProducesResponseType(typeof(IReadOnlyList<EquipmentBelongingsDto>), StatusCodes.Status200OK)]
     public async Task<IActionResult> GetBelongings()
