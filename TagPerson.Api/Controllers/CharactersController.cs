@@ -125,6 +125,16 @@ public class CharactersController : ControllerBase
         return ok ? NoContent() : NotFound();
     }
 
+    /// <summary>Seleciona as magias do personagem.</summary>
+    [HttpGet("{id:int}/spells")]
+    [ProducesResponseType(typeof(SpellFromCharacterDto), StatusCodes.Status200OK)]
+    [ProducesResponseType(StatusCodes.Status404NotFound)]
+    public async Task<IActionResult> GetCharacterSpell(int id)
+    {
+        var dto = await _service.GetCharacterSpellAsync(id, HttpContext.RequestAborted);
+        return dto is null ? NotFound() : Ok(dto);
+    }
+
     /// <summary>Adiciona caracterização ao personagem.</summary>
     [HttpPost("{id:int}/characterizations")]
     [ProducesResponseType(StatusCodes.Status204NoContent)]

@@ -133,6 +133,7 @@ public sealed record CharacterEquipmentRequestDto(
 
 public sealed record CharacterSpellRequestDto(
     int SpellId,
+    int SpellGroupId,
     int? Level
 );
 
@@ -226,6 +227,20 @@ public sealed record SpellFromGroupDto(
     string? Effects,
     int? isProfession,
     int? isEspecialization 
+);
+
+public sealed record SpellFromCharacterDto(
+    int Id,
+    string Name,
+    string? Description,
+    string? Evocation,
+    string? Range,
+    string? Duration,
+    string? Effects,
+    int? Cost,
+    int? Level,
+    int? isProfession,
+    int? isEspecialization
 );
 
 public sealed record SpellTechniquesDto(

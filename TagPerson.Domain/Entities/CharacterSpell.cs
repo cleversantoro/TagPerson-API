@@ -11,5 +11,8 @@ public class CharacterSpell
     [Column("id_magia")] public int SpellId { get; set; }
     public Spell Spell { get; set; } = default!;
 
+    [Column("id_magia_grupo")] public int SpellGroupId { get; set; }
+    public SpellGroup SpellGroup { get; set; } = default!;
+
     [Column("nivel")] public int? Level { get; set; }
 }

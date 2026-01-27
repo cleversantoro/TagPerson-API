@@ -1,7 +1,10 @@
 using Microsoft.EntityFrameworkCore;
+using System.Text.RegularExpressions;
+using TagPerson.Application.DTOs;
 using TagPerson.Application.Interfaces.Repositories;
 using TagPerson.Domain.Entities;
 using TagPerson.Infrastructure.Data;
+using static System.Runtime.InteropServices.JavaScript.JSType;
 
 namespace TagPerson.Infrastructure.Repositories;
 
@@ -163,6 +166,33 @@ public sealed class CharacterRepository : ICharacterRepository
 
     public async Task AddSPellAsync(CharacterSpell characterSpell, CancellationToken ct)
     {
-        await _db.CharacterSpells.AddAsync(characterSpell, ct); 
+        await _db.CharacterSpells.AddAsync(characterSpell, ct);
     }
+
+    public async Task<SpellFromCharacterDto?> GetCharacterSpellAsync(int id, CancellationToken ct)
+    {
+        return await (from pm in _db.CharacterSpells
+                      join m in _db.Spells on pm.SpellId equals m.Id
+                      join mgc in _db.SpellGroupCosts on m.Id equals mgc.SpellId
+                      join mg in _db.SpellGroups on mgc.SpellGroupId equals mg.Id
+                      where pm.CharacterId == id && pm.SpellGroupId == mg.Id
+                      select new SpellFromCharacterDto(
+                          m.Id,
+                          m.Name,
+                          m.Description,
+                          m.Evocation,
+                          m.Range,
+                          m.Duration,
+                          m.LevelsJson,
+                          mgc.Cost,
+                          pm.Level,
+                          mg.IsProfession,
+                          mg.IsEspecialization
+                      )).FirstOrDefaultAsync(ct);
+    }
+
+    //public async Task<CharacterSpell?> ICharacterRepository.GetCharacterSpellAsync(int id, CancellationToken ct)
+    //{
+    //    throw new NotImplementedException();
+    //}
 }

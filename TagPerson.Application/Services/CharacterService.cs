@@ -293,6 +293,7 @@ public sealed class CharacterService : ICharacterService
             {
                 CharacterId = id,
                 SpellId = req.SpellId,
+                SpellGroupId = req.SpellGroupId,
                 Level = req.Level ?? 0
             }, ct);
         }
@@ -303,6 +304,26 @@ public sealed class CharacterService : ICharacterService
 
         await _repo.SaveChangesAsync(ct);
         return true;
+    }
+
+    public async Task<SpellFromCharacterDto?> GetCharacterSpellAsync(int id, CancellationToken ct)
+    {
+        var c = await _repo.GetCharacterSpellAsync(id, ct);
+        if (c is null) return null;
+
+        return new SpellFromCharacterDto(
+            c.Id,
+            c.Name,
+            c.Description,
+            c.Evocation,
+            c.Range,
+            c.Duration,
+            c.Effects,
+            c.Cost,
+            c.Level,
+            c.isProfession,
+            c.isEspecialization
+        );
     }
 
     public async Task<bool> AddCombatSkillAsync(int id, CharacterCombatSkillRequestDto request, CancellationToken ct)

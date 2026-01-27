@@ -1,3 +1,4 @@
+using TagPerson.Application.DTOs;
 using TagPerson.Domain.Entities;
 
 namespace TagPerson.Application.Interfaces.Repositories;
@@ -34,4 +35,5 @@ public interface ICharacterRepository
     Task<bool> SpellExistsAsync(int spellId, CancellationToken ct);
     Task<CharacterSpell?> GetSpellAsync(int characterId, int spellId, CancellationToken ct);
     Task AddSPellAsync(CharacterSpell characterSpell, CancellationToken ct);
+    Task<SpellFromCharacterDto?> GetCharacterSpellAsync(int id, CancellationToken ct);
 }
