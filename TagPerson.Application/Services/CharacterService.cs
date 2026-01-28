@@ -310,7 +310,7 @@ public sealed class CharacterService : ICharacterService
     {
         var c = await _repo.GetCharacterSpellAsync(id, ct);
 
-        return c.Select (c=> new SpellFromCharacterDto(
+        return c.Select(c => new SpellFromCharacterDto(
             c.Id,
             c.Name,
             c.Description,
@@ -527,6 +527,11 @@ public sealed class CharacterService : ICharacterService
         {
             return Array.Empty<StartingEquipmentDto>();
         }
+    }
+
+    public Task<bool> DeleteCharacterSpellAsync(int id, int spellId, int spellGroupId, CancellationToken ct)
+    {
+        return _repo.DeleteCharacterSpellAsync(id, spellId, spellGroupId, ct);
     }
 
     private sealed record EquipmentItem(int EquipmentId, string Name);

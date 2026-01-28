@@ -1,4 +1,5 @@
 using TagPerson.Application.DTOs;
+using TagPerson.Domain.Entities;
 
 namespace TagPerson.Application.Interfaces;
 
@@ -19,4 +20,5 @@ public interface ICharacterService
     Task<(bool success, string message)> ApplyAttributeDistributionAsync(int id, AttributeDistributionRequestDto request, CancellationToken ct);
     Task<bool> AddSpellAsync(int id, CharacterSpellRequestDto req, CancellationToken requestAborted);
     Task<IReadOnlyList<SpellFromCharacterDto>> GetCharacterSpellAsync(int id, CancellationToken ct);
+    Task<bool> DeleteCharacterSpellAsync(int id, int spellId, int spellGroupId, CancellationToken ct);
 }

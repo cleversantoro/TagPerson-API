@@ -188,8 +188,15 @@ public sealed class CharacterRepository : ICharacterRepository
                           pm.Level,
                           mg.IsProfession,
                           mg.IsEspecialization
-                      )).ToList(ct);// FirstOrDefaultAsync(ct);
+                      )).ToListAsync(ct);
     }
 
-    
+    public async Task<bool> DeleteCharacterSpellAsync(int id, int spellId, int spellGroupId, CancellationToken ct)
+    {
+        var entity = await _db.CharacterSpells.FirstOrDefaultAsync(x => x.CharacterId == id && x.SpellId == spellId && x.SpellGroupId == spellGroupId, ct);
+        if (entity is null) return false;
+        _db.CharacterSpells.Remove(entity);
+        await _db.SaveChangesAsync(ct);
+        return true;
+    }
 }

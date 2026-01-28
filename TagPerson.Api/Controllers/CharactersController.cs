@@ -22,15 +22,7 @@ public class CharactersController : ControllerBase
         _service = service;
     }
 
-    /// <summary>Lista personagens com dados resumidos.</summary>
-    [HttpGet]
-    [ProducesResponseType(typeof(IReadOnlyList<CharacterListItemDto>), StatusCodes.Status200OK)]
-    public async Task<IActionResult> List()
-    {
-        var list = await _service.ListAsync(HttpContext.RequestAborted);
-        return Ok(list);
-    }
-
+    #region Ficha
     /// <summary>Obtem a ficha completa do personagem.</summary>
     [HttpGet("{id:int}/sheet")]
     [ProducesResponseType(typeof(CharacterSheetDto), StatusCodes.Status200OK)]
@@ -41,6 +33,17 @@ public class CharactersController : ControllerBase
         return dto is null ? NotFound() : Ok(dto);
     }
 
+    /// <summary>Lista personagens com dados resumidos.</summary>
+    [HttpGet]
+    [ProducesResponseType(typeof(IReadOnlyList<CharacterListItemDto>), StatusCodes.Status200OK)]
+    public async Task<IActionResult> List()
+    {
+        var list = await _service.ListAsync(HttpContext.RequestAborted);
+        return Ok(list);
+    }
+    #endregion
+
+    #region Personagem
     /// <summary>Cria um personagem.</summary>
     [HttpPost]
     [ProducesResponseType(typeof(CharacterSheetDto), StatusCodes.Status201Created)]
@@ -48,6 +51,16 @@ public class CharactersController : ControllerBase
     {
         var created = await _service.CreateAsync(req, HttpContext.RequestAborted);
         return CreatedAtAction(nameof(Sheet), new { id = created.Id }, created);
+    }
+
+    /// <summary>Exclui um personagem.</summary>
+    [HttpDelete("{id:int}")]
+    [ProducesResponseType(StatusCodes.Status204NoContent)]
+    [ProducesResponseType(StatusCodes.Status404NotFound)]
+    public async Task<IActionResult> Delete(int id)
+    {
+        var ok = await _service.DeleteAsync(id, HttpContext.RequestAborted);
+        return ok ? NoContent() : NotFound();
     }
 
     /// <summary>Atualiza dados basicos do personagem.</summary>
@@ -59,7 +72,9 @@ public class CharactersController : ControllerBase
         var updated = await _service.UpdateAsync(id, req, HttpContext.RequestAborted);
         return updated ? NoContent() : NotFound();
     }
+    #endregion
 
+    #region habilidade
     /// <summary>Adiciona habilidade ao personagem.</summary>
     [HttpPost("{id:int}/skills")]
     [ProducesResponseType(StatusCodes.Status204NoContent)]
@@ -70,13 +85,16 @@ public class CharactersController : ControllerBase
         return ok ? NoContent() : NotFound();
     }
 
-    /// <summary>Adiciona tecnica de combate ao personagem.</summary>
-    [HttpPost("{id:int}/combat")]
+    #endregion
+
+    #region Especialização
+    /// <summary>Adiciona especializacao da habilidade ao personagem.</summary>
+    [HttpPost("{id:int}/skills/{skillId:int}/specializations")]
     [ProducesResponseType(StatusCodes.Status204NoContent)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
-    public async Task<IActionResult> AddCombat(int id, [FromBody] CharacterCombatSkillRequestDto req)
+    public async Task<IActionResult> AddSkillSpecialization(int id, int skillId, [FromBody] CharacterSkillSpecializationRequestDto req)
     {
-        var ok = await _service.AddCombatSkillAsync(id, req, HttpContext.RequestAborted);
+        var ok = await _service.AddSkillSpecializationAsync(id, skillId, req, HttpContext.RequestAborted);
         return ok ? NoContent() : NotFound();
     }
 
@@ -88,18 +106,22 @@ public class CharactersController : ControllerBase
         var list = await _service.GetSkillSpecializationsAsync(id, skillId, HttpContext.RequestAborted);
         return Ok(list);
     }
+    #endregion
 
-    /// <summary>Adiciona especializacao da habilidade ao personagem.</summary>
-    [HttpPost("{id:int}/skills/{skillId:int}/specializations")]
+    #region Combate
+    /// <summary>Adiciona tecnica de combate ao personagem.</summary>
+    [HttpPost("{id:int}/combat")]
     [ProducesResponseType(StatusCodes.Status204NoContent)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
-    public async Task<IActionResult> AddSkillSpecialization(int id, int skillId, [FromBody] CharacterSkillSpecializationRequestDto req)
+    public async Task<IActionResult> AddCombat(int id, [FromBody] CharacterCombatSkillRequestDto req)
     {
-        var ok = await _service.AddSkillSpecializationAsync(id, skillId, req, HttpContext.RequestAborted);
+        var ok = await _service.AddCombatSkillAsync(id, req, HttpContext.RequestAborted);
         return ok ? NoContent() : NotFound();
     }
+    #endregion
 
-    /// <summary>Adiciona equipamento ao personagem.</summary>
+    #region Equipamentos
+        /// <summary>Adiciona equipamento ao personagem.</summary>
     [HttpPost("{id:int}/equipments")]
     [ProducesResponseType(StatusCodes.Status204NoContent)]
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
@@ -114,7 +136,9 @@ public class CharactersController : ControllerBase
 
         return NoContent();
     }
+    #endregion
 
+    #region Magia
     /// <summary>Adiciona magia ao personagem.</summary>
     [HttpPost("{id:int}/spells")]
     [ProducesResponseType(StatusCodes.Status204NoContent)]
@@ -136,6 +160,18 @@ public class CharactersController : ControllerBase
         return Ok(list);
     }
 
+    /// <summary>Exclui uma magia do personagem.</summary>
+    [HttpDelete("{id:int}/spells")]
+    [ProducesResponseType(StatusCodes.Status204NoContent)]
+    [ProducesResponseType(StatusCodes.Status404NotFound)]
+    public async Task<IActionResult> DeleteCharacterSpell(int id, int spellId, int spellGroupId)
+    {
+        var ok = await _service.DeleteCharacterSpellAsync(id, spellId, spellGroupId, HttpContext.RequestAborted);
+        return ok ? NoContent() : NotFound();
+    }
+    #endregion
+
+    #region Caracterização
     /// <summary>Adiciona caracterização ao personagem.</summary>
     [HttpPost("{id:int}/characterizations")]
     [ProducesResponseType(StatusCodes.Status204NoContent)]
@@ -151,17 +187,9 @@ public class CharactersController : ControllerBase
 
         return NoContent();
     }
+    #endregion
 
-    /// <summary>Exclui um personagem.</summary>
-    [HttpDelete("{id:int}")]
-    [ProducesResponseType(StatusCodes.Status204NoContent)]
-    [ProducesResponseType(StatusCodes.Status404NotFound)]
-    public async Task<IActionResult> Delete(int id)
-    {
-        var ok = await _service.DeleteAsync(id, HttpContext.RequestAborted);
-        return ok ? NoContent() : NotFound();
-    }
-
+    #region Atributos
     /// <summary>Valida a distribuição de atributos do personagem.</summary>
     [HttpPost("{id:int}/validate-attributes")]
     [ProducesResponseType(typeof(AttributeDistributionResponseDto), StatusCodes.Status200OK)]
@@ -182,4 +210,5 @@ public class CharactersController : ControllerBase
         var result = await _service.ApplyAttributeDistributionAsync(id, req, HttpContext.RequestAborted);
         return result.success ? NoContent() : BadRequest(result.message);
     }
+    #endregion 
 }

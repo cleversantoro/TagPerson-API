@@ -36,4 +36,5 @@ public interface ICharacterRepository
     Task<CharacterSpell?> GetSpellAsync(int characterId, int spellId, CancellationToken ct);
     Task AddSPellAsync(CharacterSpell characterSpell, CancellationToken ct);
     Task<IReadOnlyList<SpellFromCharacterDto>> GetCharacterSpellAsync(int id, CancellationToken ct);
+    Task<bool> DeleteCharacterSpellAsync(int id, int spellId, int spellGroupId, CancellationToken ct);
 }
