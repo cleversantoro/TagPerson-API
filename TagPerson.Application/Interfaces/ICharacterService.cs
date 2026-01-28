@@ -18,5 +18,5 @@ public interface ICharacterService
     Task<AttributeDistributionResponseDto?> ValidateAttributeDistributionAsync(int id, AttributeDistributionRequestDto request, CancellationToken ct);
     Task<(bool success, string message)> ApplyAttributeDistributionAsync(int id, AttributeDistributionRequestDto request, CancellationToken ct);
     Task<bool> AddSpellAsync(int id, CharacterSpellRequestDto req, CancellationToken requestAborted);
-    Task<SpellFromCharacterDto?> GetCharacterSpellAsync(int id, CancellationToken ct);
+    Task<IReadOnlyList<SpellFromCharacterDto>> GetCharacterSpellAsync(int id, CancellationToken ct);
 }

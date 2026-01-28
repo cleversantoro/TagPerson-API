@@ -129,7 +129,7 @@ public sealed class CharacterService : ICharacterService
                 e.Qty,
                 e.Equipment.IsWeapon,
                 e.Equipment.IsDefense,
-                e.Equipment.IsArmor,    
+                e.Equipment.IsArmor,
                 e.Equipment.IsShield,
                 e.Equipment.IsHelmet
             )).ToList(),
@@ -306,12 +306,11 @@ public sealed class CharacterService : ICharacterService
         return true;
     }
 
-    public async Task<SpellFromCharacterDto?> GetCharacterSpellAsync(int id, CancellationToken ct)
+    public async Task<IReadOnlyList<SpellFromCharacterDto>> GetCharacterSpellAsync(int id, CancellationToken ct)
     {
         var c = await _repo.GetCharacterSpellAsync(id, ct);
-        if (c is null) return null;
 
-        return new SpellFromCharacterDto(
+        return c.Select (c=> new SpellFromCharacterDto(
             c.Id,
             c.Name,
             c.Description,
@@ -323,7 +322,7 @@ public sealed class CharacterService : ICharacterService
             c.Level,
             c.isProfession,
             c.isEspecialization
-        );
+        )).ToList();
     }
 
     public async Task<bool> AddCombatSkillAsync(int id, CharacterCombatSkillRequestDto request, CancellationToken ct)
@@ -423,10 +422,7 @@ public sealed class CharacterService : ICharacterService
         return _repo.DeleteAsync(id, ct);
     }
 
-    public async Task<AttributeDistributionResponseDto?> ValidateAttributeDistributionAsync(
-        int id,
-        AttributeDistributionRequestDto request,
-        CancellationToken ct)
+    public async Task<AttributeDistributionResponseDto?> ValidateAttributeDistributionAsync(int id, AttributeDistributionRequestDto request, CancellationToken ct)
     {
         var character = await _repo.GetAsync(id, ct);
         if (character?.RaceId is null)
@@ -460,10 +456,7 @@ public sealed class CharacterService : ICharacterService
         );
     }
 
-    public async Task<(bool success, string message)> ApplyAttributeDistributionAsync(
-        int id,
-        AttributeDistributionRequestDto request,
-        CancellationToken ct)
+    public async Task<(bool success, string message)> ApplyAttributeDistributionAsync(int id, AttributeDistributionRequestDto request, CancellationToken ct)
     {
         var character = await _repo.GetAsync(id, ct);
         if (character?.RaceId is null)

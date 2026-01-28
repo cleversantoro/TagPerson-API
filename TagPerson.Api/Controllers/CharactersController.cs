@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using TagPerson.Application.DTOs;
 using TagPerson.Application.Interfaces;
+using TagPerson.Domain.Entities;
 
 namespace TagPerson.Api.Controllers;
 
@@ -127,12 +128,12 @@ public class CharactersController : ControllerBase
 
     /// <summary>Seleciona as magias do personagem.</summary>
     [HttpGet("{id:int}/spells")]
-    [ProducesResponseType(typeof(SpellFromCharacterDto), StatusCodes.Status200OK)]
+    [ProducesResponseType(typeof(IReadOnlyList<SpellFromCharacterDto>), StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
     public async Task<IActionResult> GetCharacterSpell(int id)
     {
-        var dto = await _service.GetCharacterSpellAsync(id, HttpContext.RequestAborted);
-        return dto is null ? NotFound() : Ok(dto);
+        var list = await _service.GetCharacterSpellAsync(id, HttpContext.RequestAborted);
+        return Ok(list);
     }
 
     /// <summary>Adiciona caracterização ao personagem.</summary>

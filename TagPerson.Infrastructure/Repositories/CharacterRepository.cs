@@ -169,7 +169,7 @@ public sealed class CharacterRepository : ICharacterRepository
         await _db.CharacterSpells.AddAsync(characterSpell, ct);
     }
 
-    public async Task<SpellFromCharacterDto?> GetCharacterSpellAsync(int id, CancellationToken ct)
+    public async Task<IReadOnlyList<SpellFromCharacterDto>> GetCharacterSpellAsync(int id, CancellationToken ct)
     {
         return await (from pm in _db.CharacterSpells
                       join m in _db.Spells on pm.SpellId equals m.Id
@@ -188,11 +188,8 @@ public sealed class CharacterRepository : ICharacterRepository
                           pm.Level,
                           mg.IsProfession,
                           mg.IsEspecialization
-                      )).FirstOrDefaultAsync(ct);
+                      )).ToList(ct);// FirstOrDefaultAsync(ct);
     }
 
-    //public async Task<CharacterSpell?> ICharacterRepository.GetCharacterSpellAsync(int id, CancellationToken ct)
-    //{
-    //    throw new NotImplementedException();
-    //}
+    
 }
