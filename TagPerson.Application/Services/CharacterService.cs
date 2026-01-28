@@ -51,6 +51,8 @@ public sealed class CharacterService : ICharacterService
 
         var startingEquipments = ParseStartingEquipments(c.Profession?.StartingEquipment);
 
+        var spellCharacter = await _repo.GetCharacterSpellAsync(id, ct);
+
         return new CharacterSheetDto(
             c.Id,
             c.Name,
@@ -105,14 +107,16 @@ public sealed class CharacterService : ICharacterService
                 s.Skill.Restricted,
                 s.Skill.HasSpecialization
             )).ToList(),
-            c.Spells.Select(s => new CharacterSpellDto(
-                s.SpellId,
-                s.Spell.Name,
-                s.Level,
-                s.Spell.Evocation,
-                s.Spell.Range,
-                s.Spell.Duration
-            )).ToList(),
+            spellCharacter,
+            //c.Spells.Select(s => new CharacterSpellDto(
+            //    s.SpellId,
+            //    s.Spell.Name,
+            //    s.Level,
+            //    s.Spell.Evocation,
+            //    s.Spell.Range,
+            //    s.Spell.Duration,
+            //    s.Type
+            //)).ToList(),
             c.CombatSkills.Select(s => new CharacterCombatSkillDto(
                 s.CombatSkillId,
                 s.CombatSkill.Name,
@@ -294,7 +298,8 @@ public sealed class CharacterService : ICharacterService
                 CharacterId = id,
                 SpellId = req.SpellId,
                 SpellGroupId = req.SpellGroupId,
-                Level = req.Level ?? 0
+                Level = req.Level ?? 0,
+                Type = req.type
             }, ct);
         }
         else if (req.Level.HasValue)
@@ -320,8 +325,7 @@ public sealed class CharacterService : ICharacterService
             c.Effects,
             c.Cost,
             c.Level,
-            c.isProfession,
-            c.isEspecialization
+            c.Type
         )).ToList();
     }
 

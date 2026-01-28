@@ -171,24 +171,26 @@ public sealed class CharacterRepository : ICharacterRepository
 
     public async Task<IReadOnlyList<SpellFromCharacterDto>> GetCharacterSpellAsync(int id, CancellationToken ct)
     {
-        return await (from pm in _db.CharacterSpells
-                      join m in _db.Spells on pm.SpellId equals m.Id
-                      join mgc in _db.SpellGroupCosts on m.Id equals mgc.SpellId
-                      join mg in _db.SpellGroups on mgc.SpellGroupId equals mg.Id
-                      where pm.CharacterId == id && pm.SpellGroupId == mg.Id
-                      select new SpellFromCharacterDto(
-                          m.Id,
-                          m.Name,
-                          m.Description,
-                          m.Evocation,
-                          m.Range,
-                          m.Duration,
-                          m.LevelsJson,
-                          mgc.Cost,
-                          pm.Level,
-                          mg.IsProfession,
-                          mg.IsEspecialization
-                      )).ToListAsync(ct);
+        return await _db.CharacterSpells
+             .Where(pm => pm.CharacterId == id)
+             .Join(_db.Spells, pm => pm.SpellId, m => m.Id, (pm, m) => new { pm, m })
+             .Join(_db.SpellGroupCosts, x => x.m.Id, mgc => mgc.SpellId, (x, mgc) => new { x.pm, x.m, mgc })
+             .Join(_db.SpellGroups, x => x.mgc.SpellGroupId, mg => mg.Id, (x, mg) => new { x.pm, x.m, x.mgc, mg })
+             .Where(x => x.pm.SpellGroupId == x.mg.Id)
+             .Select(x => new SpellFromCharacterDto(
+                 x.m.Id,
+                 x.m.Name,
+                 x.m.Description,
+                 x.m.Evocation,
+                 x.m.Range,
+                 x.m.Duration,
+                 x.m.LevelsJson,
+                 x.mgc.Cost,
+                 x.pm.Level,
+                 x.pm.Type
+             ))
+             .ToListAsync(ct);
+
     }
 
     public async Task<bool> DeleteCharacterSpellAsync(int id, int spellId, int spellGroupId, CancellationToken ct)

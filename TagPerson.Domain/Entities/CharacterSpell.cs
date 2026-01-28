@@ -15,4 +15,6 @@ public class CharacterSpell
     public SpellGroup SpellGroup { get; set; } = default!;
 
     [Column("nivel")] public int? Level { get; set; }
+
+    [Column("tipo")] public int? Type { get; set; }
 }

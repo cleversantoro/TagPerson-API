@@ -28,7 +28,8 @@ public sealed record CharacterSheetDto(
     CharacterCoinsDto Coins,
     DerivedStatsDto Derived,
     IReadOnlyList<CharacterSkillDto> Skills,
-    IReadOnlyList<CharacterSpellDto> Spells,
+    //IReadOnlyList<CharacterSpellDto> Spells,
+    IReadOnlyList<SpellFromCharacterDto> Spells,
     IReadOnlyList<CharacterCombatSkillDto> Combat,
     IReadOnlyList<CharacterEquipmentDto> Equipments,
     IReadOnlyList<CharacterCharacterizationDto> Characterizations,
@@ -94,7 +95,8 @@ public sealed record CharacterSpellDto(
     int? Level,
     string? Evocation,
     string? Range,
-    string? Duration
+    string? Duration,
+    int? type
 );
 
 public sealed record CharacterCombatSkillDto(
@@ -134,7 +136,8 @@ public sealed record CharacterEquipmentRequestDto(
 public sealed record CharacterSpellRequestDto(
     int SpellId,
     int SpellGroupId,
-    int? Level
+    int? Level,
+    int? type 
 );
 
 public sealed record CharacterSkillRequestDto(
@@ -239,8 +242,7 @@ public sealed record SpellFromCharacterDto(
     string? Effects,
     int? Cost,
     int? Level,
-    int? isProfession,
-    int? isEspecialization
+    int? Type
 );
 
 public sealed record SpellTechniquesDto(
