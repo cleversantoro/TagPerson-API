@@ -118,10 +118,31 @@ public class CharactersController : ControllerBase
         var ok = await _service.AddCombatSkillAsync(id, req, HttpContext.RequestAborted);
         return ok ? NoContent() : NotFound();
     }
+
+    /// <summary>Seleciona as Tecnicas de Combate do personagem.</summary>
+    [HttpGet("{id:int}/combat")]
+    [ProducesResponseType(typeof(IReadOnlyList<CombatFromCharacterDto>), StatusCodes.Status200OK)]
+    [ProducesResponseType(StatusCodes.Status404NotFound)]
+    public async Task<IActionResult> GetCharacterCombat(int id)
+    {
+        var list = await _service.GetCharacterCombatAsync(id, HttpContext.RequestAborted);
+        return Ok(list);
+    }
+
+    /// <summary>Exclui uma Tecnica de Combate do personagem.</summary>
+    [HttpDelete("{id:int}/combat")]
+    [ProducesResponseType(StatusCodes.Status204NoContent)]
+    [ProducesResponseType(StatusCodes.Status404NotFound)]
+    public async Task<IActionResult> DeleteCharacterCombat(int id, int combatId, int combatGroupId)
+    {
+        var ok = await _service.DeleteCharacterCombatAsync(id, combatId, combatGroupId, HttpContext.RequestAborted);
+        return ok ? NoContent() : NotFound();
+    }
+
     #endregion
 
     #region Equipamentos
-        /// <summary>Adiciona equipamento ao personagem.</summary>
+    /// <summary>Adiciona equipamento ao personagem.</summary>
     [HttpPost("{id:int}/equipments")]
     [ProducesResponseType(StatusCodes.Status204NoContent)]
     [ProducesResponseType(StatusCodes.Status400BadRequest)]

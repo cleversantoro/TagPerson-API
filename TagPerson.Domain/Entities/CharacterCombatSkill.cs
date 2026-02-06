@@ -11,7 +11,10 @@ public class CharacterCombatSkill
     [Column("id_combate")] public int CombatSkillId { get; set; }
     public CombatSkill CombatSkill { get; set; } = default!;
 
-    [Column("grupo")] public int? Group { get; set; }
+    [Column("id_combate_grupo")] public int CombatGroupId { get; set; }
+    public CombatGroup CombatGroup { get; set; } = default!;
 
     [Column("nivel")] public int? Level { get; set; }
+
+    [Column("tipo")] public int? Type { get; set; }
 }

@@ -124,7 +124,7 @@ public sealed class CharacterRepository : ICharacterRepository
         return await _db.CombatSkills.AnyAsync(x => x.Id == combatSkillId, ct);
     }
 
-    public async Task<CharacterCombatSkill?> GetCombatSkillAsync(int characterId, int combatSkillId, CancellationToken ct)
+    public async Task<CharacterCombatSkill?> GetCombatSkillAsync(int characterId, int combatSkillId, int combatGroupId,CancellationToken ct)
     {
         return await _db.CharacterCombatSkills
             .FirstOrDefaultAsync(x => x.CharacterId == characterId && x.CombatSkillId == combatSkillId, ct);
@@ -198,6 +198,46 @@ public sealed class CharacterRepository : ICharacterRepository
         var entity = await _db.CharacterSpells.FirstOrDefaultAsync(x => x.CharacterId == id && x.SpellId == spellId && x.SpellGroupId == spellGroupId, ct);
         if (entity is null) return false;
         _db.CharacterSpells.Remove(entity);
+        await _db.SaveChangesAsync(ct);
+        return true;
+    }
+
+    public async Task<IReadOnlyList<CombatFromCharacterDto>> GetCharacterCombatAsync(int id, CancellationToken ct)
+    {
+        return await _db.CharacterCombatSkills
+            .Where(pc => pc.CharacterId == id)
+             .Join(_db.CombatSkills, pc => pc.CombatSkillId, c => c.Id, (pc, c) => new { pc, c })
+             .Join(_db.CombatGroupCosts, x => x.c.Id, cgc => cgc.CombatSkillId, (x, cgc) => new { x.pc, x.c, cgc })
+             .Join(_db.CombatGroups, x => x.cgc.CombatGroupId, cg => cg.Id, (x, cg) => new { x.pc, x.c, x.cgc, cg })
+             .Join(_db.Categories, x => x.c.CategoryId, ctg => ctg.Id, (x, ctg) => new { x.pc, x.c, x.cgc, x.cg, ctg })
+             .Where(x => x.pc.CombatGroupId == x.cg.Id)
+             .Select(x => new CombatFromCharacterDto(
+                    x.c.Id,
+                    x.c.Name,
+                    x.c.AttributeCode,
+                    x.c.Effect,
+                    x.c.Notes,
+                    x.c.Requisite,
+                    x.c.RollTable,
+                    x.c.Improvement,
+                    x.cg.ParentId,
+                    x.cg.Id,
+                    x.cg.Name,
+                    x.ctg.Id,
+                    x.ctg.Name,
+                    x.cgc.Cost,
+                    x.c.Bonus,
+                    x.cgc.Reduction,
+                    x.pc.Type,
+                    x.pc.Level
+             )).ToListAsync(ct);
+    }
+
+    public async Task<bool> DeleteCharacterCombatAsync(int id, int combatId, int combatGroupId, CancellationToken ct)
+    {
+        var entity = await _db.CharacterCombatSkills.FirstOrDefaultAsync(x => x.CharacterId == id && x.CombatSkillId == combatId && x.CombatGroupId == combatGroupId, ct);
+        if (entity is null) return false;
+        _db.CharacterCombatSkills.Remove(entity);
         await _db.SaveChangesAsync(ct);
         return true;
     }

@@ -53,6 +53,8 @@ public sealed class CharacterService : ICharacterService
 
         var spellCharacter = await _repo.GetCharacterSpellAsync(id, ct);
 
+        var combatCharacter = await _repo.GetCharacterCombatAsync(id, ct);
+
         return new CharacterSheetDto(
             c.Id,
             c.Name,
@@ -66,10 +68,11 @@ public sealed class CharacterService : ICharacterService
             c.Profession is null ? null : new SimpleLookupDto(c.Profession.Id, c.Profession.Name),
             c.Specialization is null ? null : new SpecializationDto(
                 c.Specialization.Id,
+                c.Specialization.Name,
+                c.Specialization.Description,
                 c.Specialization.ProfessionId,
                 c.Specialization.SpellGroupId,
-                c.Specialization.CombatGroupId,
-                c.Specialization.Name
+                c.Specialization.CombatGroupId
             ),
             c.Deity is null ? null : new SimpleLookupDto(c.Deity.Id, c.Deity.Name),
             new CharacterAttributesDto(
@@ -108,6 +111,7 @@ public sealed class CharacterService : ICharacterService
                 s.Skill.HasSpecialization
             )).ToList(),
             spellCharacter,
+            combatCharacter,
             //c.Spells.Select(s => new CharacterSpellDto(
             //    s.SpellId,
             //    s.Spell.Name,
@@ -117,13 +121,13 @@ public sealed class CharacterService : ICharacterService
             //    s.Spell.Duration,
             //    s.Type
             //)).ToList(),
-            c.CombatSkills.Select(s => new CharacterCombatSkillDto(
-                s.CombatSkillId,
-                s.CombatSkill.Name,
-                s.Level,
-                s.Group,
-                s.CombatSkill.AttributeCode
-            )).ToList(),
+            //c.CombatSkills.Select(s => new CharacterCombatSkillDto(
+            //    s.CombatSkillId,
+            //    s.CombatSkill.Name,
+            //    s.Level,
+            //    s.CombatGroupId,
+            //    s.CombatSkill.AttributeCode
+            //)).ToList(),
             c.Equipments.Select(e => new CharacterEquipmentDto(
                 e.EquipmentId,
                 e.Equipment.GroupId,
@@ -337,15 +341,16 @@ public sealed class CharacterService : ICharacterService
         var skillExists = await _repo.CombatSkillExistsAsync(request.CombatSkillId, ct);
         if (!skillExists) return false;
 
-        var current = await _repo.GetCombatSkillAsync(id, request.CombatSkillId, ct);
+        var current = await _repo.GetCombatSkillAsync(id, request.CombatSkillId, request.CombatGroupId, ct);
         if (current is null)
         {
             await _repo.AddCombatSkillAsync(new CharacterCombatSkill
             {
                 CharacterId = id,
                 CombatSkillId = request.CombatSkillId,
-                Group = request.Group ?? 0,
-                Level = request.Level ?? 0
+                CombatGroupId = request.CombatGroupId,
+                Level = request.Level ?? 0,
+                Type = request.Type
             }, ct);
         }
         else if (request.Level.HasValue)
@@ -536,6 +541,38 @@ public sealed class CharacterService : ICharacterService
     public Task<bool> DeleteCharacterSpellAsync(int id, int spellId, int spellGroupId, CancellationToken ct)
     {
         return _repo.DeleteCharacterSpellAsync(id, spellId, spellGroupId, ct);
+    }
+
+    public async Task<IReadOnlyList<CombatFromCharacterDto>> GetCharacterCombatAsync(int id, CancellationToken ct)
+    {
+        var c = await _repo.GetCharacterCombatAsync(id, ct);
+
+        return c.Select(c => new CombatFromCharacterDto(
+            c.CombatId,
+            c.CombatName,
+            c.AttributeCode,
+            c.Effect,
+            c.Notes,
+            c.Requisite,
+            c.RollTable,
+            c.Improvement,
+            c.ProfEspId,
+            c.CombatGroupId,
+            c.GroupName,
+            c.CategoryId,
+            c.CategoryName,
+            c.Cost,
+            c.Bonus,
+            c.Reduction,
+            c.Type,
+            c.Level
+        )).ToList();
+
+    }
+
+    public Task<bool> DeleteCharacterCombatAsync(int id, int combatId, int combatGroupId, CancellationToken ct)
+    {
+        return _repo.DeleteCharacterCombatAsync(id, combatId, combatGroupId, ct);
     }
 
     private sealed record EquipmentItem(int EquipmentId, string Name);

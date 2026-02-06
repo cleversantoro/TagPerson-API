@@ -28,9 +28,8 @@ public sealed record CharacterSheetDto(
     CharacterCoinsDto Coins,
     DerivedStatsDto Derived,
     IReadOnlyList<CharacterSkillDto> Skills,
-    //IReadOnlyList<CharacterSpellDto> Spells,
     IReadOnlyList<SpellFromCharacterDto> Spells,
-    IReadOnlyList<CharacterCombatSkillDto> Combat,
+    IReadOnlyList<CombatFromCharacterDto> Combat,
     IReadOnlyList<CharacterEquipmentDto> Equipments,
     IReadOnlyList<CharacterCharacterizationDto> Characterizations,
     IReadOnlyList<StartingEquipmentDto> StartingEquipments
@@ -137,7 +136,7 @@ public sealed record CharacterSpellRequestDto(
     int SpellId,
     int SpellGroupId,
     int? Level,
-    int? type 
+    int? type
 );
 
 public sealed record CharacterSkillRequestDto(
@@ -147,8 +146,9 @@ public sealed record CharacterSkillRequestDto(
 
 public sealed record CharacterCombatSkillRequestDto(
     int CombatSkillId,
-    int? Group,
-    int? Level
+    int CombatGroupId,
+    int? Level,
+    int? Type
 );
 
 public sealed record CreateCharacterRequestDto(
@@ -229,7 +229,7 @@ public sealed record SpellFromGroupDto(
     string? Description,
     string? Effects,
     int? isProfession,
-    int? isEspecialization 
+    int? isEspecialization
 );
 
 public sealed record SpellFromCharacterDto(
@@ -264,6 +264,27 @@ public sealed record SpellTechniquesDto(
 
 #region Combate
 public sealed record CombatGroupDto(int Id, string Name, int? ParentId);
+
+public sealed record CombatFromCharacterDto(
+    int? CombatId,
+    string? CombatName,
+    string? AttributeCode,
+    string? Effect,
+    string? Notes,
+    string? Requisite,
+    string? RollTable,
+    string? Improvement,
+    int? ProfEspId,
+    int? CombatGroupId,
+    string? GroupName,
+    int? CategoryId,
+    string? CategoryName,
+    int? Cost,
+    int? Bonus,
+    int? Reduction,
+    int? Type,
+    int? Level
+);
 
 public sealed record CombatTechniquesDto(
     int? CombatId,
@@ -307,7 +328,7 @@ public sealed record CategoryDto(int Id, string Name, string? Icon);
 
 #endregion
 
-public sealed record SpecializationDto(int Id, int? ProfessionId, int? SpellGroupId, int? CombatGroupI, string Name);
+public sealed record SpecializationDto(int Id, string? Name, string? Description, int? ProfessionId, int? SpellGroupId, int? CombatGroupId);
 
 public sealed record StartingEquipmentDto(int EquipmentId, string Name);
 

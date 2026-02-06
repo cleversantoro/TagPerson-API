@@ -25,7 +25,7 @@ public interface ICharacterRepository
     Task AddSkillSpecializationAsync(CharacterSkillSpecialization specialization, CancellationToken ct);
     Task<IReadOnlyList<CharacterSkillSpecialization>> ListSkillSpecializationsAsync(int characterId, int skillId, CancellationToken ct);
     Task<bool> CombatSkillExistsAsync(int combatSkillId, CancellationToken ct);
-    Task<CharacterCombatSkill?> GetCombatSkillAsync(int characterId, int combatSkillId, CancellationToken ct);
+    Task<CharacterCombatSkill?> GetCombatSkillAsync(int characterId, int combatSkillId, int combatGroupId, CancellationToken ct);
     Task AddCombatSkillAsync(CharacterCombatSkill skill, CancellationToken ct);
     Task<bool> EquipmentExistsAsync(int equipmentId, CancellationToken ct);
     Task<CharacterEquipment?> GetEquipmentAsync(int characterId, int equipmentId, CancellationToken ct);
@@ -37,4 +37,6 @@ public interface ICharacterRepository
     Task AddSPellAsync(CharacterSpell characterSpell, CancellationToken ct);
     Task<IReadOnlyList<SpellFromCharacterDto>> GetCharacterSpellAsync(int id, CancellationToken ct);
     Task<bool> DeleteCharacterSpellAsync(int id, int spellId, int spellGroupId, CancellationToken ct);
+    Task<IReadOnlyList<CombatFromCharacterDto>> GetCharacterCombatAsync(int id, CancellationToken ct);
+    Task<bool> DeleteCharacterCombatAsync(int id, int combatId, int combatGroupId, CancellationToken ct);
 }
