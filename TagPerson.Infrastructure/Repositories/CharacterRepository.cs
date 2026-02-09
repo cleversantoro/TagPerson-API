@@ -1,4 +1,5 @@
 using Microsoft.EntityFrameworkCore;
+using System;
 using System.Text.RegularExpressions;
 using TagPerson.Application.DTOs;
 using TagPerson.Application.Interfaces.Repositories;
@@ -124,7 +125,7 @@ public sealed class CharacterRepository : ICharacterRepository
         return await _db.CombatSkills.AnyAsync(x => x.Id == combatSkillId, ct);
     }
 
-    public async Task<CharacterCombatSkill?> GetCombatSkillAsync(int characterId, int combatSkillId, int combatGroupId,CancellationToken ct)
+    public async Task<CharacterCombatSkill?> GetCombatSkillAsync(int characterId, int combatSkillId, int combatGroupId, CancellationToken ct)
     {
         return await _db.CharacterCombatSkills
             .FirstOrDefaultAsync(x => x.CharacterId == characterId && x.CombatSkillId == combatSkillId, ct);
@@ -241,4 +242,144 @@ public sealed class CharacterRepository : ICharacterRepository
         await _db.SaveChangesAsync(ct);
         return true;
     }
+
+    public async Task<IReadOnlyList<CharacterCharacterizationDto>> GetCharacterCharacterizationAsync(int id, CancellationToken ct)
+    {
+        return await _db.CharacterCharacterizations
+            .AsNoTracking()
+            .Where(pc => pc.CharacterId == id)
+            .Join(_db.Characterizations.AsNoTracking(),
+                pc => pc.CharacterizationId,
+                c => c.Id,
+                (pc, c) => new { pc, c })
+            .Join(_db.CharacterizationTypes.AsNoTracking(),
+                x => x.c.CharacterizationTypeId,
+                cType => cType.Id,
+                (x, cType) => new { x.pc, x.c, cType })
+            .Join(_db.CharacterizationGroups.AsNoTracking(),
+                x => x.cType.Id,
+                cg => cg.CharacterizationTypeId,
+                (x, cg) => new { x.pc, x.c, x.cType, cg })
+            .Join(_db.CharacterizationGroupCosts.AsNoTracking(),
+                x => x.c.Id,
+                cgc => cgc.CharacterizationId,
+                (x, cgc) => new { x.pc, x.c, x.cType, x.cg, cgc })
+            .Where(x => x.cgc.CharacterizationGroupId == x.cg.Id)
+            .OrderBy(x => x.c.Name)
+            .Select(x => new CharacterCharacterizationDto(
+                x.c.Id,
+                x.c.Name,
+                x.c.CharacterizationTypeId,
+                x.cType.Name,
+                x.c.CharacterizationGroupId,
+                x.cg.Name,
+                x.c.Description,
+                x.c.Notes,
+                x.cgc.PlaceId,
+                x.cgc.Cost,
+                x.cgc.IsInitial,
+                x.cgc.IsRare,
+                x.cgc.IsAllowGame,
+                x.pc.Level
+            ))
+            .ToListAsync(ct);
+    }
+
+    public async Task<IReadOnlyList<SkillFromCharacterDto>> GetCharacterSkillAsync(int id, CancellationToken ct)
+    {
+        return await _db.CharacterSkills
+            .AsNoTracking()
+            .Where(ph => ph.CharacterId == id)
+            .Join(_db.Skills.AsNoTracking(),
+                ph => ph.SkillId,
+                h => h.Id,
+                (ph, h) => new { ph, h })
+            .Join(_db.SkillGroups.AsNoTracking(),
+                x => x.h.SkillGroupId,
+                hg => hg.Id,
+                (x, hg) => new { x.ph, x.h, hg })
+            .Join(_db.SkillGroupCosts.AsNoTracking(),
+                x => x.h.Id,
+                hgc => hgc.SkillId,
+                (x, hgc) => new { x.ph, x.h, x.hg, hgc })
+            .OrderBy(x => x.h.Name)
+            .Select(x => new SkillFromCharacterDto(
+                x.h.Id,
+                x.h.Name,
+                x.h.SkillGroupId,
+                x.hg.Name,
+                x.h.Description,
+                x.h.AttributeCode,
+                x.h.LevelTest,
+                x.h.Restricted,
+                x.h.Penalties,
+                x.h.ImprovedTasks,
+                x.h.LevelsJson,
+                x.h.Bonus,
+                x.h.HasSpecialization,
+                x.hgc.Cost,
+                x.ph.Level
+            ))
+            .ToListAsync(ct);
+    }
+
+    public async Task<bool> DeleteCharacterSkillAsync(int id, int skillId, CancellationToken ct)
+    {
+        var entity = await _db.CharacterSkills.FirstOrDefaultAsync(x => x.CharacterId == id && x.SkillId == skillId, ct);
+        if (entity is null) return false;
+        _db.CharacterSkills.Remove(entity);
+        await _db.SaveChangesAsync(ct);
+        return true;
+    }
+
+    public async Task<bool> DeleteCharacterEquipmentsAsync(int id, int equipmentId, CancellationToken ct)
+    {
+        var entity = await _db.CharacterEquipments.FirstOrDefaultAsync(x => x.CharacterId == id && x.EquipmentId == equipmentId, ct);
+        if (entity is null) return false;
+        _db.CharacterEquipments.Remove(entity);
+        await _db.SaveChangesAsync(ct);
+        return true;
+    }
+
+    public async Task<bool> DeleteCharacterCharacterizationsAsync(int id, int characterizationId, CancellationToken ct)
+    {
+        var entity = await _db.CharacterCharacterizations.FirstOrDefaultAsync(x => x.CharacterId == id && x.CharacterizationId == characterizationId, ct);
+        if (entity is null) return false;
+        _db.CharacterCharacterizations.Remove(entity);
+        await _db.SaveChangesAsync(ct);
+        return true;
+    }
+
+    public async Task<IReadOnlyList<CharacterEquipmentDetailDto>> GetCharacterEquipmentsAsync(int id, CancellationToken ct)
+    {
+        return await _db.CharacterEquipments
+            .AsNoTracking()
+            .Where(pe => pe.CharacterId == id)
+            .Join(_db.Equipments.AsNoTracking(),
+                pe => pe.EquipmentId,
+                e => e.Id,
+                (pe, e) => new { pe, e })
+            .Join(_db.EquipmentGroups.AsNoTracking(),
+                x => x.e.GroupId,
+                eg => eg.Id,
+                (x, eg) => new { x.pe, x.e, eg })
+            .OrderBy(x => x.e.Name)
+            .Select(x => new CharacterEquipmentDetailDto(
+                x.e.Id,
+                x.e.Name,
+                x.e.GroupId,
+                x.eg.Name,
+                x.e.Description,
+                x.e.ImageFile,
+                x.e.Price,
+                x.e.IsWeapon,
+                x.e.IsDefense,
+                x.e.IsArmor,
+                x.e.IsShield,
+                x.e.IsHelmet,
+                x.pe.Qty
+            ))
+            .ToListAsync(ct);
+    }
+
 }

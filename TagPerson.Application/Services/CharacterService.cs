@@ -1,4 +1,6 @@
 using System.Text.Json;
+using System.Text.RegularExpressions;
+using System.Xml.Linq;
 using TagPerson.Application.DTOs;
 using TagPerson.Application.Interfaces;
 using TagPerson.Application.Interfaces.Repositories;
@@ -54,6 +56,13 @@ public sealed class CharacterService : ICharacterService
         var spellCharacter = await _repo.GetCharacterSpellAsync(id, ct);
 
         var combatCharacter = await _repo.GetCharacterCombatAsync(id, ct);
+        
+        var characterizationCharacter = await _repo.GetCharacterCharacterizationAsync(id, ct);
+
+        var skillCharacter = await _repo.GetCharacterSkillAsync(id, ct);
+        
+        var equipmentCharacter = await _repo.GetCharacterEquipmentsAsync(id, ct);
+
 
         return new CharacterSheetDto(
             c.Id,
@@ -102,50 +111,11 @@ public sealed class CharacterService : ICharacterService
             ),
             new CharacterCoinsDto(c.CoinsCopper, c.CoinsSilver, c.CoinsGold),
             Map(derived),
-            c.Skills.Select(s => new CharacterSkillDto(
-                s.SkillId,
-                s.Skill.Name,
-                s.Level,
-                s.Skill.AttributeCode,
-                s.Skill.Restricted,
-                s.Skill.HasSpecialization
-            )).ToList(),
+            skillCharacter,
             spellCharacter,
             combatCharacter,
-            //c.Spells.Select(s => new CharacterSpellDto(
-            //    s.SpellId,
-            //    s.Spell.Name,
-            //    s.Level,
-            //    s.Spell.Evocation,
-            //    s.Spell.Range,
-            //    s.Spell.Duration,
-            //    s.Type
-            //)).ToList(),
-            //c.CombatSkills.Select(s => new CharacterCombatSkillDto(
-            //    s.CombatSkillId,
-            //    s.CombatSkill.Name,
-            //    s.Level,
-            //    s.CombatGroupId,
-            //    s.CombatSkill.AttributeCode
-            //)).ToList(),
-            c.Equipments.Select(e => new CharacterEquipmentDto(
-                e.EquipmentId,
-                e.Equipment.GroupId,
-                e.Equipment.Name,
-                e.Equipment.Description,
-                e.Equipment.Price,
-                e.Qty,
-                e.Equipment.IsWeapon,
-                e.Equipment.IsDefense,
-                e.Equipment.IsArmor,
-                e.Equipment.IsShield,
-                e.Equipment.IsHelmet
-            )).ToList(),
-            c.Characterizations.Select(ch => new CharacterCharacterizationDto(
-                ch.CharacterizationId,
-                ch.Characterization.Name,
-                ch.Level
-            )).ToList(),
+            equipmentCharacter,
+            characterizationCharacter,
             startingEquipments
         );
     }
@@ -573,6 +543,87 @@ public sealed class CharacterService : ICharacterService
     public Task<bool> DeleteCharacterCombatAsync(int id, int combatId, int combatGroupId, CancellationToken ct)
     {
         return _repo.DeleteCharacterCombatAsync(id, combatId, combatGroupId, ct);
+    }
+
+    public async Task<IReadOnlyList<SkillFromCharacterDto>> GetCharacterSkillAsync(int id, CancellationToken ct)
+    {
+        var c = await _repo.GetCharacterSkillAsync(id, ct);
+
+        return c.Select(c => new SkillFromCharacterDto(
+            c.Id,
+            c.Name,
+            c.SkillGroupId,
+            c.GroupName,
+            c.Description,
+            c.AttributeCode,
+            c.LevelTest,
+            c.Restricted,
+            c.Penalties,
+            c.ImprovedTasks,
+            c.Levelsjson,
+            c.Bonus,
+            c.HasSpecialization,
+            c.Cost,
+            c.Level
+        )).ToList();
+    }
+
+    public Task<bool> DeleteCharacterSkillAsync(int id, int skillId, CancellationToken ct)
+    {
+        return _repo.DeleteCharacterSkillAsync(id, skillId,  ct);
+    }
+
+    public async Task<IReadOnlyList<CharacterEquipmentDetailDto>> GetCharacterEquipmentsAsync(int id, CancellationToken ct)
+    {
+        var c = await _repo.GetCharacterEquipmentsAsync(id, ct);
+
+        return c.Select(c => new CharacterEquipmentDetailDto(
+            c.Id,
+            c.Name,
+            c.GroupId,
+            c.GroupName,
+            c.Description,
+            c.ImageFile,
+            c.Price,
+            c.IsWeapon,
+            c.IsDefense,
+            c.IsArmor,
+            c.IsShield,
+            c.IsHelmet,
+            c.Qty
+        )).ToList();
+    }
+
+    public Task<bool> DeleteCharacterEquipmentsAsync(int id, int equipmentId, CancellationToken ct)
+    {
+        return _repo.DeleteCharacterEquipmentsAsync(id, equipmentId, ct);
+    }
+
+    public async Task<IReadOnlyList<CharacterCharacterizationDto>> GetCharacterCharacterizationsAsync(int id, CancellationToken ct)
+    {
+        var c = await _repo.GetCharacterCharacterizationAsync(id, ct);
+
+        return c.Select(c => new CharacterCharacterizationDto(
+            c.Id,
+            c.Name,
+            c.CharacterizationTypeId,
+            c.NameType,
+            c.CharacterizationGroupId,
+            c.NameGroup,
+            c.Description,
+            c.Notes,
+            c.PlaceId,
+            c.Cost,
+            c.IsInitial,
+            c.IsRare,
+            c.IsAllowGame,
+            c.Level
+        )).ToList();
+    }
+
+    public Task<bool> DeleteCharacterCharacterizationsAsync(int id, int characterizationId, CancellationToken ct)
+    {
+        return _repo.DeleteCharacterCharacterizationsAsync(id, characterizationId, ct);
     }
 
     private sealed record EquipmentItem(int EquipmentId, string Name);

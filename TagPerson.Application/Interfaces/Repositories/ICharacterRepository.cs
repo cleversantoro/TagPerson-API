@@ -39,4 +39,10 @@ public interface ICharacterRepository
     Task<bool> DeleteCharacterSpellAsync(int id, int spellId, int spellGroupId, CancellationToken ct);
     Task<IReadOnlyList<CombatFromCharacterDto>> GetCharacterCombatAsync(int id, CancellationToken ct);
     Task<bool> DeleteCharacterCombatAsync(int id, int combatId, int combatGroupId, CancellationToken ct);
+    Task<IReadOnlyList<CharacterCharacterizationDto>> GetCharacterCharacterizationAsync(int id, CancellationToken ct);
+    Task<IReadOnlyList<SkillFromCharacterDto>> GetCharacterSkillAsync(int id, CancellationToken ct);
+    Task<bool> DeleteCharacterSkillAsync(int id, int skillId, CancellationToken ct);
+    Task<bool> DeleteCharacterEquipmentsAsync(int id, int equipmentId, CancellationToken ct);
+    Task<bool> DeleteCharacterCharacterizationsAsync(int id, int characterizationId, CancellationToken ct);
+    Task<IReadOnlyList<CharacterEquipmentDetailDto>> GetCharacterEquipmentsAsync(int id, CancellationToken ct);
 }

@@ -1,155 +1,12 @@
 using System;
 using System.ComponentModel.DataAnnotations.Schema;
+using System.Threading.Tasks;
 using TagPerson.Domain.Entities;
 
 namespace TagPerson.Application.DTOs;
 
 
 #region Personagem
-
-public sealed record CharacterListItemDto(int Id, string Name, int? Level, SimpleLookupDto? Race, SimpleLookupDto? Profession);
-
-public sealed record CharacterSheetDto(
-    int Id,
-    string Name,
-    int? Level,
-    int? Experience,
-    string? Player,
-    string? ImageFile,
-    SimpleLookupDto? ClassSocial,
-    SimpleLookupDto? BirthPlace,
-    SimpleLookupDto? Race,
-    SimpleLookupDto? Profession,
-    SpecializationDto? Specialization,
-    SimpleLookupDto? Deity,
-    CharacterAttributesDto Attributes,
-    CharacterPointsDto Points,
-    CharacterFeaturesDto Features,
-    CharacterCoinsDto Coins,
-    DerivedStatsDto Derived,
-    IReadOnlyList<CharacterSkillDto> Skills,
-    IReadOnlyList<SpellFromCharacterDto> Spells,
-    IReadOnlyList<CombatFromCharacterDto> Combat,
-    IReadOnlyList<CharacterEquipmentDto> Equipments,
-    IReadOnlyList<CharacterCharacterizationDto> Characterizations,
-    IReadOnlyList<StartingEquipmentDto> StartingEquipments
-);
-
-public sealed record CharacterAttributesDto(
-    int? Agi,
-    int? Per,
-    int? Int,
-    int? Aur,
-    int? Car,
-    int? For,
-    int? Fis
-);
-
-public sealed record CharacterPointsDto(
-    int? PointsSkill,
-    int? PointsWeapon,
-    int? PointsCombat,
-    int? PointsMagic
-);
-
-public sealed record CharacterCoinsDto(int? Copper, int? Silver, int? Gold);
-
-public sealed record CharacterFeaturesDto(
-    int? Age,
-    int? Height,
-    int? Weight,
-    string? Eyes,
-    string? Hair,
-    string? Skin,
-    string? Appearance,
-    string? History
-);
-
-public sealed record CharacterSkillDto(
-    int SkillId,
-    string Name,
-    int? Level,
-    string? AttributeCode,
-    int? Restricted,
-    int? HasSpecialization
-);
-
-public sealed record CharacterSkillSpecializationDto(
-    int Id,
-    int SkillId,
-    int? SkillSpecializationId,
-    string? Specialization,
-    int? Level
-);
-
-public sealed record CharacterSkillSpecializationRequestDto(
-    string? Specialization,
-    int? Level,
-    int? SkillSpecializationId
-);
-
-public sealed record CharacterSpellDto(
-    int SpellId,
-    string Name,
-    int? Level,
-    string? Evocation,
-    string? Range,
-    string? Duration,
-    int? type
-);
-
-public sealed record CharacterCombatSkillDto(
-    int CombatSkillId,
-    string Name,
-    int? Level,
-    int? Group,
-    string? AttributeCode
-);
-
-public sealed record CharacterEquipmentDto(
-    int EquipmentId,
-    int? Groupid,
-    string Name,
-    string? Description,
-    int? Price,
-    int? Qty,
-    int? IsWeapon,
-    int? IsDefense,
-    int? IsArmor,
-    int? IsShield,
-    int? IsHelmet
-);
-
-public sealed record CharacterCharacterizationDto(int CharacterizationId, string Name, int? Level);
-
-public sealed record CharacterCharacterizationRequestDto(
-    int CharacterizationId,
-    int? Level
-);
-
-public sealed record CharacterEquipmentRequestDto(
-    int EquipmentId,
-    int? Qty
-);
-
-public sealed record CharacterSpellRequestDto(
-    int SpellId,
-    int SpellGroupId,
-    int? Level,
-    int? type
-);
-
-public sealed record CharacterSkillRequestDto(
-    int SkillId,
-    int? Level
-);
-
-public sealed record CharacterCombatSkillRequestDto(
-    int CombatSkillId,
-    int CombatGroupId,
-    int? Level,
-    int? Type
-);
 
 public sealed record CreateCharacterRequestDto(
     [System.ComponentModel.DataAnnotations.Required]
@@ -195,6 +52,198 @@ public sealed record UpdateCharacterRequestDto(
     int? PointsMagic
 );
 
+public sealed record CharacterListItemDto(int Id, string Name, int? Level, SimpleLookupDto? Race, SimpleLookupDto? Profession);
+
+public sealed record CharacterSheetDto(
+    int Id,
+    string Name,
+    int? Level,
+    int? Experience,
+    string? Player,
+    string? ImageFile,
+    SimpleLookupDto? ClassSocial,
+    SimpleLookupDto? BirthPlace,
+    SimpleLookupDto? Race,
+    SimpleLookupDto? Profession,
+    SpecializationDto? Specialization,
+    SimpleLookupDto? Deity,
+    CharacterAttributesDto Attributes,
+    CharacterPointsDto Points,
+    CharacterFeaturesDto Features,
+    CharacterCoinsDto Coins,
+    DerivedStatsDto Derived,
+    IReadOnlyList<SkillFromCharacterDto> Skills,
+    IReadOnlyList<SpellFromCharacterDto> Spells,
+    IReadOnlyList<CombatFromCharacterDto> Combat,
+    IReadOnlyList<CharacterEquipmentDetailDto> Equipments,
+    IReadOnlyList<CharacterCharacterizationDto> Characterizations,
+    IReadOnlyList<StartingEquipmentDto> StartingEquipments
+);
+
+public sealed record CharacterAttributesDto(
+    int? Agi,
+    int? Per,
+    int? Int,
+    int? Aur,
+    int? Car,
+    int? For,
+    int? Fis
+);
+
+public sealed record CharacterPointsDto(
+    int? PointsSkill,
+    int? PointsWeapon,
+    int? PointsCombat,
+    int? PointsMagic
+);
+
+public sealed record CharacterCoinsDto(int? Copper, int? Silver, int? Gold);
+
+public sealed record CharacterFeaturesDto(
+    int? Age,
+    int? Height,
+    int? Weight,
+    string? Eyes,
+    string? Hair,
+    string? Skin,
+    string? Appearance,
+    string? History
+);
+
+
+#region habilidade
+public sealed record CharacterSkillDto(
+    int SkillId,
+    string Name,
+    int? Level,
+    string? AttributeCode,
+    int? Restricted,
+    int? HasSpecialization
+);
+
+public sealed record CharacterSkillSpecializationDto(
+    int Id,
+    int SkillId,
+    int? SkillSpecializationId,
+    string? Specialization,
+    int? Level
+);
+
+public sealed record CharacterSkillSpecializationRequestDto(
+    string? Specialization,
+    int? Level,
+    int? SkillSpecializationId
+);
+
+public sealed record CharacterSkillRequestDto(
+    int SkillId,
+    int? Level
+);
+
+#endregion
+
+#region magia
+public sealed record CharacterSpellDto(
+    int SpellId,
+    string Name,
+    int? Level,
+    string? Evocation,
+    string? Range,
+    string? Duration,
+    int? type
+);
+
+public sealed record CharacterSpellRequestDto(
+    int SpellId,
+    int SpellGroupId,
+    int? Level,
+    int? type
+);
+
+#endregion
+
+#region equipamento
+
+public sealed record CharacterEquipmentDetailDto(
+    int Id,
+    string Name,
+    int? GroupId,
+    string GroupName,
+    string? Description,
+    string? ImageFile,
+    int? Price,
+    int? IsWeapon,
+    int? IsDefense,
+    int? IsArmor,
+    int? IsShield,
+    int? IsHelmet,
+    int? Qty
+);
+
+public sealed record CharacterEquipmentDto(
+    int EquipmentId,
+    int? Groupid,
+    string Name,
+    string? Description,
+    int? Price,
+    int? IsWeapon,
+    int? IsDefense,
+    int? IsArmor,
+    int? IsShield,
+    int? IsHelmet,
+    int? Qty
+);
+
+public sealed record CharacterEquipmentRequestDto(
+    int EquipmentId,
+    int? Qty
+);
+#endregion
+
+#region combate
+public sealed record CharacterCombatSkillRequestDto(
+    int CombatSkillId,
+    int CombatGroupId,
+    int? Level,
+    int? Type
+);
+
+public sealed record CharacterCombatSkillDto(
+    int CombatSkillId,
+    string Name,
+    int? Level,
+    int? Group,
+    string? AttributeCode
+);
+
+#endregion
+
+#region caracterização
+public sealed record CharacterCharacterizationDto(
+    int? Id,
+    string Name, 
+    int? CharacterizationTypeId,
+    string? NameType,
+    int? CharacterizationGroupId,
+    string? NameGroup,
+    string? Description,
+    string? Notes,
+    int? PlaceId,
+    int? Cost,
+    int? IsInitial,
+    int? IsRare,
+    int? IsAllowGame,
+    int? Level
+);
+
+public sealed record CharacterCharacterizationRequestDto(
+    int CharacterizationId,
+    int? Level
+);
+
+#endregion
+
+
 #endregion
 
 #region Habilidades
@@ -208,6 +257,24 @@ public sealed record SkillFromGroupDto(
     int? HasSpecialization,
     int? Restricted,
     string? AttributeCode
+);
+
+public sealed record SkillFromCharacterDto(
+    int Id,
+    string Name,
+    int? SkillGroupId,
+    string? GroupName,
+    string? Description,
+    string? AttributeCode,
+    int? LevelTest,
+    int? Restricted,
+    string? Penalties,
+    string? ImprovedTasks,
+    string? Levelsjson,
+    int? Bonus,
+    int? HasSpecialization,
+    int? Cost,
+    int? Level
 );
 
 public sealed record SkillSpecializationSuggestionDto(int Id, int SkillId, string? Suggestion);

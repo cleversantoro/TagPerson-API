@@ -21,6 +21,14 @@ public interface ICharacterService
     Task<bool> AddSpellAsync(int id, CharacterSpellRequestDto req, CancellationToken requestAborted);
     Task<IReadOnlyList<SpellFromCharacterDto>> GetCharacterSpellAsync(int id, CancellationToken ct);
     Task<bool> DeleteCharacterSpellAsync(int id, int spellId, int spellGroupId, CancellationToken ct);
-    Task<IReadOnlyList<CombatFromCharacterDto>> GetCharacterCombatAsync(int id, CancellationToken requestAborted);
-    Task<bool> DeleteCharacterCombatAsync(int id, int combatId, int combatGroupId, CancellationToken requestAborted);
+    Task<IReadOnlyList<CombatFromCharacterDto>> GetCharacterCombatAsync(int id, CancellationToken ct);
+    Task<bool> DeleteCharacterCombatAsync(int id, int combatId, int combatGroupId, CancellationToken ct);
+    Task<IReadOnlyList<SkillFromCharacterDto>> GetCharacterSkillAsync(int id, CancellationToken ct);
+    Task<bool> DeleteCharacterSkillAsync(int id, int skillId, CancellationToken ct);
+    
+    Task<IReadOnlyList<CharacterEquipmentDetailDto>> GetCharacterEquipmentsAsync(int id, CancellationToken ct);
+    Task<bool> DeleteCharacterEquipmentsAsync(int id, int equipmentId, CancellationToken ct);
+    
+    Task<IReadOnlyList<CharacterCharacterizationDto>> GetCharacterCharacterizationsAsync(int id, CancellationToken ct);
+    Task<bool> DeleteCharacterCharacterizationsAsync(int id, int characterizationId, CancellationToken ctc);
 }
