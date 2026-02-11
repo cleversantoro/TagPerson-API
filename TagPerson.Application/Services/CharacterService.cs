@@ -63,7 +63,6 @@ public sealed class CharacterService : ICharacterService
         
         var equipmentCharacter = await _repo.GetCharacterEquipmentsAsync(id, ct);
 
-
         return new CharacterSheetDto(
             c.Id,
             c.Name,
