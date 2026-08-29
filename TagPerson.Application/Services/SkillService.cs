@@ -1,6 +1,7 @@
 using TagPerson.Application.DTOs;
 using TagPerson.Application.Interfaces;
 using TagPerson.Application.Interfaces.Repositories;
+using TagPerson.Domain.Entities;
 
 namespace TagPerson.Application.Services;
 
@@ -40,4 +41,8 @@ public sealed class SkillService : ISkillService
         return await _repo.GetImprovedAsync(skillId, ct);
     }
 
+    public async Task<SkillDto?> GetSkillByIdAsync(int id, CancellationToken ct)
+    {
+        return await _repo.GetSkillByIdAsync(id, ct);
+    }
 }

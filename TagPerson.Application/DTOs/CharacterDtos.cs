@@ -259,6 +259,23 @@ public sealed record SkillFromGroupDto(
     string? AttributeCode
 );
 
+public sealed record SkillDto(
+    int Id,
+    string Name,
+    int? SkillGroupId,
+    string? GroupName,
+    string? Description,
+    string? AttributeCode,
+    int? LevelTest,
+    int? Restricted,
+    string? Penalties,
+    string? ImprovedTasks,
+    string? Levelsjson,
+    int? Bonus,
+    int? HasSpecialization,
+    int? Cost
+);
+
 public sealed record SkillFromCharacterDto(
     int Id,
     string Name,

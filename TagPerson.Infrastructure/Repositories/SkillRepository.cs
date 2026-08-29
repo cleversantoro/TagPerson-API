@@ -55,6 +55,39 @@ public sealed class SkillRepository : ISkillRepository
             .ToListAsync(ct);
     }
 
+    public async Task<SkillDto?> GetSkillByIdAsync(int id, CancellationToken ct)
+    {
+        return await _db.Skills
+            .AsNoTracking()
+            .Where(h => h.Id == id)
+            .Join(_db.SkillGroups.AsNoTracking(),
+                h => h.SkillGroupId,
+                hg => hg.Id,
+                (h, hg) => new { h, hg })
+            .Join(_db.SkillGroupCosts.AsNoTracking(),
+                x => x.h.Id,
+                hgc => hgc.SkillId,
+                (x, hgc) => new { x.h, x.hg, hgc })
+            .OrderBy(x => x.h.Name)
+            .Select(x => new SkillDto(
+                x.h.Id,
+                x.h.Name,
+                x.h.SkillGroupId,
+                x.hg.Name,
+                x.h.Description,
+                x.h.AttributeCode,
+                x.h.LevelTest,
+                x.h.Restricted,
+                x.h.Penalties,
+                x.h.ImprovedTasks,
+                x.h.LevelsJson,
+                x.h.Bonus,
+                x.h.HasSpecialization,
+                x.hgc.Cost
+            ))
+            .FirstOrDefaultAsync(ct);
+    }
+
     public async Task<IReadOnlyList<SkillSpecializationSuggestionDto>> GetSpecializationSuggestionsAsync(int skillId, CancellationToken ct)
     {
         return await _db.SkillSpecialization
@@ -79,4 +112,5 @@ public sealed class SkillRepository : ISkillRepository
     {
         return await _db.Skills.FirstOrDefaultAsync(x => x.Id == skillId, ct);
     }
+
 }

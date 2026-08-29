@@ -10,5 +10,7 @@ public interface ISkillRepository
     Task<IReadOnlyList<SkillFromGroupDto>> GetSkillsFromGroupAsync(int groupId, CancellationToken ct);
     Task<IReadOnlyList<SkillSpecializationSuggestionDto>> GetSpecializationSuggestionsAsync(int skillId, CancellationToken ct);
     Task<IReadOnlyList<SkillImprovedDto>> GetImprovedAsync(int skillId, CancellationToken ct);
+    Task<SkillDto?> GetSkillByIdAsync(int id, CancellationToken ct);
+    
     Task<Skill?> GetByIdAsync(int skillId, CancellationToken ct);
 }

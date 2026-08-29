@@ -66,4 +66,13 @@ public class SkillsController : ControllerBase
         return Ok(list);
     }
 
+    /// <summary>Lista habilidade por ID.</summary>
+    [HttpGet("{id:int}")]
+    [ProducesResponseType(typeof(SkillDto), StatusCodes.Status200OK)]
+    public async Task<IActionResult> GetSkillByIdAsync(int id)
+    {
+        var list = await _service.GetSkillByIdAsync(id, HttpContext.RequestAborted);
+        return Ok(list);
+    }
+
 }
