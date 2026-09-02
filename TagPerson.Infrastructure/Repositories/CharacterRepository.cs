@@ -80,6 +80,14 @@ public sealed class CharacterRepository : ICharacterRepository
         return await _db.Skills.AnyAsync(x => x.Id == skillId, ct);
     }
 
+    public async Task<int?> GetSkillCostAsync(int skillId, CancellationToken ct)
+    {
+        return await _db.SkillGroupCosts
+            .Where(cost => cost.SkillId == skillId)
+            .Select(cost => (int?)cost.Cost)
+            .FirstOrDefaultAsync(ct);
+    }
+
     public async Task<bool> CharacterizationExistsAsync(int characterizationId, CancellationToken ct)
     {
         return await _db.Characterizations.AnyAsync(x => x.Id == characterizationId, ct);
@@ -125,6 +133,14 @@ public sealed class CharacterRepository : ICharacterRepository
         return await _db.CombatSkills.AnyAsync(x => x.Id == combatSkillId, ct);
     }
 
+    public async Task<int?> GetCombatSkillCostAsync(int combatSkillId, int combatGroupId, CancellationToken ct)
+    {
+        return await _db.CombatGroupCosts
+            .Where(cost => cost.CombatSkillId == combatSkillId && cost.CombatGroupId == combatGroupId)
+            .Select(cost => (int?)cost.Cost)
+            .FirstOrDefaultAsync(ct);
+    }
+
     public async Task<CharacterCombatSkill?> GetCombatSkillAsync(int characterId, int combatSkillId, int combatGroupId, CancellationToken ct)
     {
         return await _db.CharacterCombatSkills
@@ -147,6 +163,19 @@ public sealed class CharacterRepository : ICharacterRepository
             .FirstOrDefaultAsync(x => x.CharacterId == characterId && x.EquipmentId == equipmentId, ct);
     }
 
+    public async Task UnequipSlotAsync(int characterId, string slot, CancellationToken ct)
+    {
+        var equippedItems = await _db.CharacterEquipments
+            .Where(item => item.CharacterId == characterId && item.Equipped && item.Slot == slot)
+            .ToListAsync(ct);
+
+        foreach (var item in equippedItems)
+        {
+            item.Equipped = false;
+            item.Slot = "nenhum";
+        }
+    }
+
     public async Task AddEquipmentAsync(CharacterEquipment equipment, CancellationToken ct)
     {
         await _db.CharacterEquipments.AddAsync(equipment, ct);
@@ -157,6 +186,14 @@ public sealed class CharacterRepository : ICharacterRepository
     public async Task<bool> SpellExistsAsync(int spellId, CancellationToken ct)
     {
         return await _db.Spells.AnyAsync(x => x.Id == spellId, ct);
+    }
+
+    public async Task<int?> GetSpellCostAsync(int spellId, int spellGroupId, CancellationToken ct)
+    {
+        return await _db.SpellGroupCosts
+            .Where(cost => cost.SpellId == spellId && cost.SpellGroupId == spellGroupId)
+            .Select(cost => (int?)cost.Cost)
+            .FirstOrDefaultAsync(ct);
     }
 
     public async Task<CharacterSpell?> GetSpellAsync(int characterId, int spellId, CancellationToken ct)
@@ -377,7 +414,9 @@ public sealed class CharacterRepository : ICharacterRepository
                 x.e.IsArmor,
                 x.e.IsShield,
                 x.e.IsHelmet,
-                x.pe.Qty
+                x.pe.Qty,
+                x.pe.Equipped,
+                x.pe.Slot
             ))
             .ToListAsync(ct);
     }

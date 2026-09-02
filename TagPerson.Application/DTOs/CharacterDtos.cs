@@ -49,7 +49,13 @@ public sealed record UpdateCharacterRequestDto(
     int? PointsSkill,
     int? PointsWeapon,
     int? PointsCombat,
-    int? PointsMagic
+    int? PointsMagic,
+
+    int? Experience,
+    int? SpecializationId,
+    int? DeityId,
+    int? ClassSocialId,
+    int? BirthPlaceId
 );
 
 public sealed record CharacterListItemDto(int Id, string Name, int? Level, SimpleLookupDto? Race, SimpleLookupDto? Profession);
@@ -77,7 +83,8 @@ public sealed record CharacterSheetDto(
     IReadOnlyList<CombatFromCharacterDto> Combat,
     IReadOnlyList<CharacterEquipmentDetailDto> Equipments,
     IReadOnlyList<CharacterCharacterizationDto> Characterizations,
-    IReadOnlyList<StartingEquipmentDto> StartingEquipments
+    IReadOnlyList<StartingEquipmentDto> StartingEquipments,
+    CharacterPointBudgetDto Budget
 );
 
 public sealed record CharacterAttributesDto(
@@ -95,6 +102,16 @@ public sealed record CharacterPointsDto(
     int? PointsWeapon,
     int? PointsCombat,
     int? PointsMagic
+);
+
+public sealed record PointAllocationDto(int Granted, int Used, int Remaining);
+
+public sealed record CharacterPointBudgetDto(
+    PointAllocationDto Attributes,
+    PointAllocationDto Skills,
+    PointAllocationDto Weapons,
+    PointAllocationDto Combat,
+    PointAllocationDto Magic
 );
 
 public sealed record CharacterCoinsDto(int? Copper, int? Silver, int? Gold);
@@ -177,7 +194,9 @@ public sealed record CharacterEquipmentDetailDto(
     int? IsArmor,
     int? IsShield,
     int? IsHelmet,
-    int? Qty
+    int? Qty,
+    bool Equipped,
+    string Slot
 );
 
 public sealed record CharacterEquipmentDto(
@@ -196,7 +215,9 @@ public sealed record CharacterEquipmentDto(
 
 public sealed record CharacterEquipmentRequestDto(
     int EquipmentId,
-    int? Qty
+    int? Qty,
+    bool? Equipped,
+    string? Slot
 );
 #endregion
 
@@ -218,7 +239,7 @@ public sealed record CharacterCombatSkillDto(
 
 #endregion
 
-#region caracterização
+#region caracterizaï¿½ï¿½o
 public sealed record CharacterCharacterizationDto(
     int? Id,
     string Name, 

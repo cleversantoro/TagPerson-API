@@ -49,7 +49,16 @@ public sealed class CharacterService : ICharacterService
         var c = await _repo.GetSheetAsync(id, ct);
         if (c is null) return null;
 
-        var derived = _calculator.Calculate(c, c.Race, c.Profession, null, null, null);
+        var armour = c.Equipments
+            .FirstOrDefault(item => item.Equipped && item.Slot == "armadura")
+            ?.Equipment?.DefenseStats;
+        var helmet = c.Equipments
+            .FirstOrDefault(item => item.Equipped && item.Slot == "elmo")
+            ?.Equipment?.DefenseStats;
+        var shield = c.Equipments
+            .FirstOrDefault(item => item.Equipped && item.Slot == "escudo")
+            ?.Equipment?.DefenseStats;
+        var derived = _calculator.Calculate(c, c.Race, c.Profession, armour, helmet, shield);
 
         var startingEquipments = ParseStartingEquipments(c.Profession?.StartingEquipment);
 
@@ -62,6 +71,8 @@ public sealed class CharacterService : ICharacterService
         var skillCharacter = await _repo.GetCharacterSkillAsync(id, ct);
         
         var equipmentCharacter = await _repo.GetCharacterEquipmentsAsync(id, ct);
+
+        var budget = CalculateBudget(c, skillCharacter, spellCharacter, combatCharacter);
 
         return new CharacterSheetDto(
             c.Id,
@@ -115,7 +126,8 @@ public sealed class CharacterService : ICharacterService
             combatCharacter,
             equipmentCharacter,
             characterizationCharacter,
-            startingEquipments
+            startingEquipments,
+            budget
         );
     }
 
@@ -196,6 +208,11 @@ public sealed class CharacterService : ICharacterService
         c.PointsWeapon = request.PointsWeapon;
         c.PointsCombat = request.PointsCombat;
         c.PointsMagic = request.PointsMagic;
+        c.Experience = request.Experience;
+        c.SpecializationId = request.SpecializationId;
+        c.DeityId = request.DeityId;
+        c.ClassSocialId = request.ClassSocialId;
+        c.BirthPlaceId = request.BirthPlaceId;
 
         await _repo.SaveChangesAsync(ct);
         return true;
@@ -237,6 +254,23 @@ public sealed class CharacterService : ICharacterService
         if (!skillExists) return false;
 
         var current = await _repo.GetSkillAsync(id, request.SkillId, ct);
+        var level = request.Level ?? current?.Level ?? 0;
+        var cost = await _repo.GetSkillCostAsync(request.SkillId, ct);
+        
+        if (cost is null)
+        {
+            throw new InvalidOperationException("A habilidade não possui custo configurado.");
+        }
+
+        EnsureLevel(level, c.Level);
+        var currentSkills = await _repo.GetCharacterSkillAsync(id, ct);
+        
+        EnsureBudget(
+            c.PointsSkill ?? 0, 
+            currentSkills.Sum(item => (item.Cost ?? 0) * (item.Level ?? 0)),
+            (current?.Level ?? 0) * cost.Value, level * cost.Value, "habilidade"
+        );
+
         if (current is null)
         {
             await _repo.AddSkillAsync(new CharacterSkill
@@ -264,6 +298,18 @@ public sealed class CharacterService : ICharacterService
         if (!spellExists) return false;
 
         var current = await _repo.GetSpellAsync(id, req.SpellId, ct);
+        var level = req.Level ?? current?.Level ?? 0;
+        var cost = await _repo.GetSpellCostAsync(req.SpellId, req.SpellGroupId, ct);
+        if (cost is null)
+        {
+            throw new InvalidOperationException("A magia não pertence ao grupo selecionado.");
+        }
+
+        EnsureLevel(level, c.Level);
+        var currentSpells = await _repo.GetCharacterSpellAsync(id, ct);
+        EnsureBudget(c.PointsMagic ?? 0, currentSpells.Sum(item => (item.Cost ?? 0) * (item.Level ?? 0)),
+            (current?.Level ?? 0) * cost.Value, level * cost.Value, "magia");
+
         if (current is null)
         {
             await _repo.AddSPellAsync(new CharacterSpell
@@ -311,6 +357,18 @@ public sealed class CharacterService : ICharacterService
         if (!skillExists) return false;
 
         var current = await _repo.GetCombatSkillAsync(id, request.CombatSkillId, request.CombatGroupId, ct);
+        var level = request.Level ?? current?.Level ?? 0;
+        var cost = await _repo.GetCombatSkillCostAsync(request.CombatSkillId, request.CombatGroupId, ct);
+        if (cost is null)
+        {
+            throw new InvalidOperationException("A técnica não pertence ao grupo selecionado.");
+        }
+
+        EnsureLevel(level, c.Level);
+        var currentCombat = await _repo.GetCharacterCombatAsync(id, ct);
+        EnsureBudget(c.PointsCombat ?? 0, currentCombat.Sum(item => (item.Cost ?? 0) * (item.Level ?? 0)),
+            (current?.Level ?? 0) * cost.Value, level * cost.Value, "combate");
+
         if (current is null)
         {
             await _repo.AddCombatSkillAsync(new CharacterCombatSkill
@@ -375,6 +433,12 @@ public sealed class CharacterService : ICharacterService
         var exists = await _repo.EquipmentExistsAsync(request.EquipmentId, ct);
         if (!exists) return false;
 
+        var slot = request.Slot ?? "nenhum";
+        if (request.Equipped == true && slot is "armadura" or "escudo" or "elmo")
+        {
+            await _repo.UnequipSlotAsync(id, slot, ct);
+        }
+
         var current = await _repo.GetEquipmentAsync(id, request.EquipmentId, ct);
         if (current is null)
         {
@@ -382,13 +446,17 @@ public sealed class CharacterService : ICharacterService
             {
                 CharacterId = id,
                 EquipmentId = request.EquipmentId,
-                Qty = request.Qty ?? 1
+                Qty = request.Qty ?? 1,
+                Equipped = request.Equipped ?? false,
+                Slot = slot
             }, ct);
         }
         else
         {
             var qty = request.Qty ?? (current.Qty ?? 0) + 1;
             current.Qty = qty;
+            current.Equipped = request.Equipped ?? current.Equipped;
+            current.Slot = request.Slot ?? current.Slot;
         }
 
         await _repo.SaveChangesAsync(ct);
@@ -483,6 +551,54 @@ public sealed class CharacterService : ICharacterService
         Absorcao = stats.Absorcao,
         PontosMagia = stats.PontosMagia
     };
+
+    private CharacterPointBudgetDto CalculateBudget(
+        Character character,
+        IReadOnlyList<SkillFromCharacterDto> skills,
+        IReadOnlyList<SpellFromCharacterDto> spells,
+        IReadOnlyList<CombatFromCharacterDto> combat)
+    {
+        var attributes = new Dictionary<AttributeType, int>
+        {
+            [AttributeType.Agilidade] = character.AttAgi ?? 0,
+            [AttributeType.Percepcao] = character.AttPer ?? 0,
+            [AttributeType.Intelecto] = character.AttInt ?? 0,
+            [AttributeType.Aura] = character.AttAur ?? 0,
+            [AttributeType.Carisma] = character.AttCar ?? 0,
+            [AttributeType.Forca] = character.AttFor ?? 0,
+            [AttributeType.Fisico] = character.AttFis ?? 0
+        };
+        var attributeGranted = character.Race is null ? 0 : _attributeCalculation.CalculateInitialPoints(character.Race);
+        var attributeUsed = character.Race is null
+            ? 0
+            : Math.Max(0, _attributeCalculation.CalculateDistributionCost(character.Race, attributes).NetCost);
+
+        return new CharacterPointBudgetDto(
+            Allocation(attributeGranted, attributeUsed),
+            Allocation(character.PointsSkill ?? 0, skills.Sum(item => (item.Cost ?? 0) * (item.Level ?? 0))),
+            Allocation(character.PointsWeapon ?? 0, 0),
+            Allocation(character.PointsCombat ?? 0, combat.Sum(item => (item.Cost ?? 0) * (item.Level ?? 0))),
+            Allocation(character.PointsMagic ?? 0, spells.Sum(item => (item.Cost ?? 0) * (item.Level ?? 0)))
+        );
+    }
+
+    private static PointAllocationDto Allocation(int granted, int used) => new(granted, used, granted - used);
+
+    private static void EnsureLevel(int level, int? characterLevel)
+    {
+        if (level < 0 || level > (characterLevel ?? 0))
+        {
+            throw new InvalidOperationException("O nível informado deve estar entre zero e o nível do personagem.");
+        }
+    }
+
+    private static void EnsureBudget(int granted, int used, int replacedCost, int requestedCost, string category)
+    {
+        if (used - replacedCost + requestedCost > granted)
+        {
+            throw new InvalidOperationException($"Pontos de {category} insuficientes para esta alteração.");
+        }
+    }
 
     private static IReadOnlyList<StartingEquipmentDto> ParseStartingEquipments(string? startingEquipment)
     {
@@ -589,7 +705,9 @@ public sealed class CharacterService : ICharacterService
             c.IsArmor,
             c.IsShield,
             c.IsHelmet,
-            c.Qty
+            c.Qty,
+            c.Equipped,
+            c.Slot
         )).ToList();
     }
 

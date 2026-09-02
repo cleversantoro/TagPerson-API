@@ -29,8 +29,15 @@ public class CharactersSpellController : ControllerBase
     [ProducesResponseType(StatusCodes.Status404NotFound)]
     public async Task<IActionResult> AddSpell(int id, [FromBody] CharacterSpellRequestDto req)
     {
-        var ok = await _service.AddSpellAsync(id, req, HttpContext.RequestAborted);
-        return ok ? NoContent() : NotFound();
+        try
+        {
+            var ok = await _service.AddSpellAsync(id, req, HttpContext.RequestAborted);
+            return ok ? NoContent() : NotFound();
+        }
+        catch (InvalidOperationException exception)
+        {
+            return BadRequest(new { message = exception.Message });
+        }
     }
 
     /// <summary>Seleciona as magias do personagem.</summary>

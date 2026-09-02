@@ -13,6 +13,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TagPerson.Application", "Ta
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TagPerson.Infrastructure", "TagPerson.Infrastructure\TagPerson.Infrastructure.csproj", "{B27E5203-06BF-4B28-B365-6ABEB380854E}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TagPerson.Application.Tests", "TagPerson.Application.Tests\TagPerson.Application.Tests.csproj", "{B8B664BE-F7F9-4218-AEF4-0163EFEBEB0D}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -83,6 +85,18 @@ Global
 		{B27E5203-06BF-4B28-B365-6ABEB380854E}.Release|x64.Build.0 = Release|Any CPU
 		{B27E5203-06BF-4B28-B365-6ABEB380854E}.Release|x86.ActiveCfg = Release|Any CPU
 		{B27E5203-06BF-4B28-B365-6ABEB380854E}.Release|x86.Build.0 = Release|Any CPU
+		{B8B664BE-F7F9-4218-AEF4-0163EFEBEB0D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{B8B664BE-F7F9-4218-AEF4-0163EFEBEB0D}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{B8B664BE-F7F9-4218-AEF4-0163EFEBEB0D}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{B8B664BE-F7F9-4218-AEF4-0163EFEBEB0D}.Debug|x64.Build.0 = Debug|Any CPU
+		{B8B664BE-F7F9-4218-AEF4-0163EFEBEB0D}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{B8B664BE-F7F9-4218-AEF4-0163EFEBEB0D}.Debug|x86.Build.0 = Debug|Any CPU
+		{B8B664BE-F7F9-4218-AEF4-0163EFEBEB0D}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{B8B664BE-F7F9-4218-AEF4-0163EFEBEB0D}.Release|Any CPU.Build.0 = Release|Any CPU
+		{B8B664BE-F7F9-4218-AEF4-0163EFEBEB0D}.Release|x64.ActiveCfg = Release|Any CPU
+		{B8B664BE-F7F9-4218-AEF4-0163EFEBEB0D}.Release|x64.Build.0 = Release|Any CPU
+		{B8B664BE-F7F9-4218-AEF4-0163EFEBEB0D}.Release|x86.ActiveCfg = Release|Any CPU
+		{B8B664BE-F7F9-4218-AEF4-0163EFEBEB0D}.Release|x86.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

@@ -28,8 +28,15 @@ public class CharactersCombatController : ControllerBase
     [ProducesResponseType(StatusCodes.Status404NotFound)]
     public async Task<IActionResult> AddCombat(int id, [FromBody] CharacterCombatSkillRequestDto req)
     {
-        var ok = await _service.AddCombatSkillAsync(id, req, HttpContext.RequestAborted);
-        return ok ? NoContent() : NotFound();
+        try
+        {
+            var ok = await _service.AddCombatSkillAsync(id, req, HttpContext.RequestAborted);
+            return ok ? NoContent() : NotFound();
+        }
+        catch (InvalidOperationException exception)
+        {
+            return BadRequest(new { message = exception.Message });
+        }
     }
 
     /// <summary>Seleciona as Tecnicas de Combate do personagem.</summary>

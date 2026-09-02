@@ -15,11 +15,13 @@ public class CharactersController : ControllerBase
 {
     /// <summary>Endpoints de personagens.</summary>
     private readonly ICharacterService _service;
+    private readonly ICharacterSheetPdfService _pdfService;
 
     /// <summary>Cria o controller de personagens.</summary>
-    public CharactersController(ICharacterService service)
+    public CharactersController(ICharacterService service, ICharacterSheetPdfService pdfService)
     {
         _service = service;
+        _pdfService = pdfService;
     }
 
     #region Ficha
@@ -31,6 +33,22 @@ public class CharactersController : ControllerBase
     {
         var dto = await _service.GetSheetAsync(id, HttpContext.RequestAborted);
         return dto is null ? NotFound() : Ok(dto);
+    }
+
+    /// <summary>Exporta a versão salva da ficha do personagem em PDF.</summary>
+    [HttpGet("{id:int}/sheet/pdf")]
+    [Produces("application/pdf")]
+    [ProducesResponseType(StatusCodes.Status404NotFound)]
+    public async Task<IActionResult> ExportPdf(int id)
+    {
+        var sheet = await _service.GetSheetAsync(id, HttpContext.RequestAborted);
+        if (sheet is null)
+        {
+            return NotFound();
+        }
+
+        var document = _pdfService.Generate(sheet);
+        return File(document, "application/pdf", $"ficha-{id}.pdf");
     }
 
     /// <summary>Lista personagens com dados resumidos.</summary>

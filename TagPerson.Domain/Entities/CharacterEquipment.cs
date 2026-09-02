@@ -12,4 +12,6 @@ public class CharacterEquipment
     public Equipment Equipment { get; set; } = default!;
 
     [Column("quantidade")] public int? Qty { get; set; }
+    [Column("equipado")] public bool Equipped { get; set; }
+    [Column("slot")] public string Slot { get; set; } = "nenhum";
 }

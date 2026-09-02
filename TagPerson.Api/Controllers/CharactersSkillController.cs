@@ -28,8 +28,15 @@ public class CharactersSkillController : ControllerBase
     [ProducesResponseType(StatusCodes.Status404NotFound)]
     public async Task<IActionResult> AddSkill(int id, [FromBody] CharacterSkillRequestDto req)
     {
-        var ok = await _service.AddSkillAsync(id, req, HttpContext.RequestAborted);
-        return ok ? NoContent() : NotFound();
+        try
+        {
+            var ok = await _service.AddSkillAsync(id, req, HttpContext.RequestAborted);
+            return ok ? NoContent() : NotFound();
+        }
+        catch (InvalidOperationException exception)
+        {
+            return BadRequest(new { message = exception.Message });
+        }
     }
 
     /// <summary>Seleciona as habilidades do personagem.</summary>

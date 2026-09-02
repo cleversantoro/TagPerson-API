@@ -2,12 +2,15 @@ using System.Reflection;
 using System.Text;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
+using QuestPDF.Infrastructure;
 using TagPerson.Application;
 using TagPerson.Domain.Services;
 using TagPerson.Infrastructure;
 using TagPerson.Infrastructure.Options;
 
 var builder = WebApplication.CreateBuilder(args);
+
+QuestPDF.Settings.License = LicenseType.Community;
 
 builder.Services.AddControllers();
 
